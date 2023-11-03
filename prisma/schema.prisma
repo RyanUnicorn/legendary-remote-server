@@ -9,3 +9,70 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Admin {
+  password String @id @default("12345678")
+}
+
+// device in HomeAssistant
+model Device {
+  identifiers      Int     @id @default(autoincrement())
+  name             String
+  enableUpdate     Boolean
+  blocklyJS        String?
+  blocklyWorkspace String?
+
+  entities entity[]
+}
+
+// entity in HomeAssistant
+model entity {
+  // device - relation = entity
+  device   Device @relation(fields: [deviceId], references: [identifiers])
+  deviceId Int
+
+  uniqueId Int     @id
+  name     String
+  icon     String?
+
+  // subtypes
+  switch Switch?
+  select Select?
+  button Button?
+  number Number?
+}
+
+model Switch {
+  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entityId Int    @id
+
+  state Boolean
+}
+
+model Select {
+  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entityId Int    @id
+
+  // !!primitive type can't be array!!
+  options String
+}
+
+model Button {
+  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entityId Int    @id
+}
+
+model Number {
+  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entityId Int    @id
+
+  number   Float
+  max      Float
+  min      Float
+  step     Float
+  isSlider Boolean
+}
+
+// model ac {}
+// model fan {}
+// model light {}
