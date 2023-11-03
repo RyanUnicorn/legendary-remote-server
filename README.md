@@ -12,7 +12,7 @@ npm i
 
 2. Create and configure `.env`
 ```shell
-(ls .env && echo ".env is already exist") || more +2 .env.default > .env
+(dir .env && echo ".env is already exist") || more +2 .env.default > .env
 ```
 
 3. Run a migration to create your database tables with Prisma Migrate
