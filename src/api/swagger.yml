@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  version: 1.0.11
+paths:
+  /board:
+    get:
+      summary: list boards
+      description: Update an existing pet by Id
+      operationId: updatePet
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/boards'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/boards'
+
+  
+components:
+  schemas:
+    boards:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: string
+          format: int
+          example: 12:34:56:78:9A:BC
+        name:
+          type: string
+          example: example board esp8266
+        tags:
+          type: array
+          xml:
+            wrapped: true
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+            - available
+            - pending
+            - sold
