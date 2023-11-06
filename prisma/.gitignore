@@ -1,3 +1,5 @@
 # prisma generated files
 migrations
+
 dev.db
+dev.db-journal

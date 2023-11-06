@@ -22,11 +22,22 @@ model Device {
   blocklyJS        String?
   blocklyWorkspace String?
 
-  entities entity[]
+  entities Entity[]
+  irCodes  IrCode[]
+}
+
+model IrCode {
+  device   Device @relation(fields: [deviceId], references: [identifiers])
+  deviceId Int
+
+  id           Int     @id @default(autoincrement())
+  name         String  
+  description  String?
+  rawData      String
 }
 
 // entity in HomeAssistant
-model entity {
+model Entity {
   // device - relation = entity
   device   Device @relation(fields: [deviceId], references: [identifiers])
   deviceId Int
@@ -43,14 +54,14 @@ model entity {
 }
 
 model Switch {
-  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [uniqueId])
   entityId Int    @id
 
   state Boolean
 }
 
 model Select {
-  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [uniqueId])
   entityId Int    @id
 
   // !!primitive type can't be array!!
@@ -58,12 +69,12 @@ model Select {
 }
 
 model Button {
-  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [uniqueId])
   entityId Int    @id
 }
 
 model Number {
-  entity   entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [uniqueId])
   entityId Int    @id
 
   number   Float
