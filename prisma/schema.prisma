@@ -14,8 +14,19 @@ model Admin {
   password String @id @default("12345678")
 }
 
+model Board {
+  id    Int     @id @default(autoincrement())
+  name  String
+
+  devices Device[]
+}
+
 // device in HomeAssistant
 model Device {
+  // board - relation = device
+  board   Board @relation(fields: [boardId], references: [id])
+  boardId Int
+
   identifiers      Int     @id @default(autoincrement())
   name             String
   enableUpdate     Boolean
