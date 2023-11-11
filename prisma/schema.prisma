@@ -15,8 +15,8 @@ model Admin {
 }
 
 model Board {
-  id    Int     @id @default(autoincrement())
-  name  String
+  id   Int    @id @default(autoincrement())
+  name String
 
   devices Device[]
 }
@@ -27,7 +27,7 @@ model Device {
   board   Board @relation(fields: [boardId], references: [id])
   boardId Int
 
-  identifiers      Int     @id @default(autoincrement())
+  id               Int     @id @default(autoincrement())
   name             String
   enableUpdate     Boolean
   blocklyJS        String?
@@ -38,25 +38,26 @@ model Device {
 }
 
 model IrCode {
-  device   Device @relation(fields: [deviceId], references: [identifiers])
+  device   Device @relation(fields: [deviceId], references: [id])
   deviceId Int
 
-  id           Int     @id @default(autoincrement())
-  name         String  
-  description  String?
-  rawData      String
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  rawData     String
 }
 
 // entity in HomeAssistant
 model Entity {
   // device - relation = entity
-  device   Device @relation(fields: [deviceId], references: [identifiers])
+  device   Device @relation(fields: [deviceId], references: [id])
   deviceId Int
 
-  uniqueId Int     @id
-  name     String
-  icon     String?
+  id   Int     @id
+  name String
+  icon String?
 
+  type   String // one of the subtypes: switch, select, button, number
   // subtypes
   switch Switch?
   select Select?
@@ -65,30 +66,31 @@ model Entity {
 }
 
 model Switch {
-  entity   Entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [id])
   entityId Int    @id
 
   state Boolean
 }
 
 model Select {
-  entity   Entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [id])
   entityId Int    @id
 
   // !!primitive type can't be array!!
   options String
+  state   String
 }
 
 model Button {
-  entity   Entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [id])
   entityId Int    @id
 }
 
 model Number {
-  entity   Entity @relation(fields: [entityId], references: [uniqueId])
+  entity   Entity @relation(fields: [entityId], references: [id])
   entityId Int    @id
 
-  number   Float
+  state    Float
   max      Float
   min      Float
   step     Float

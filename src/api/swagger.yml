@@ -2,50 +2,648 @@ openapi: 3.0.3
 info:
   title: Swagger Petstore - OpenAPI 3.0
   version: 1.0.11
+
+tags:
+  - name: boards
+    description: Board stuffs here
+  - name: devices
+    description: Device stuffs here
+  - name: entities
+    description: Entity stuffs here
+  - name: ircodes
+    description: IrCode stuffs here
+
 paths:
-  /board:
+  # boards stuff
+  /boards:
     get:
-      summary: list boards
-      description: Update an existing pet by Id
-      operationId: updatePet
-      requestBody:
-        description: Update an existent pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/boards'
+      tags:
+        - "boards"
+      summary: List boards
+      description: List all the connected boards
+
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/boards'
+                type: array
+                items:
+                  $ref: '#/components/schemas/board'
 
+    post:
+      tags:
+        - "boards"
+      summary: Connect new board
+      description: Connect new board to the server
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/board'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/board'
+        '405':
+          description: Invalid input
+
+  /boards/{boardId}:
+    get:
+      tags:
+        - "boards"
+      summary: Get a connected board
+      description: Get a connected board bi id
+
+      parameters:
+        - name: boardId
+          in: path
+          description: boardId to get
+          required: true
+          schema:
+            type: string
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/board'
+        '404':
+          description: Board not found
+
+    put:
+      tags:
+        - "boards"
+      summary: Update a connected board
+      description: Update a connected board by id
+
+      parameters:
+        - name: boardId
+          in: path
+          description: boardId to update
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/board'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/board'
+        '404':
+          description: Board not found
   
+    delete:
+      tags:
+        - "boards"
+      summary: Disconnect a connected board
+      description: Disconnect a connected board by id
+
+      parameters:
+        - name: boardId
+          in: path
+          description: boardId to delete
+          required: true
+          schema:
+            type: string
+      
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Board not found
+
+  /boards/discover:
+    get:
+      tags:
+        - "boards"
+      summary: List all boars available
+      description: List all boars available for connecting
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 123456789ABC
+                  
+  # devices stuff
+  /devices:
+    get:
+      tags:
+        - "devices"
+      summary: List devices
+      description: List all the uesrs devices
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/devices'
+
+    post:
+      tags:
+        - "devices"
+      summary: Create new device
+      description: Create a new device
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Example device name
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+        '405':
+          description: Invalid input
+
+  /devices/{deviceId}:
+    get:
+      tags:
+        - "devices"
+      summary: Get a device
+      description: Get a device's info by id
+
+      parameters:
+        - name: deviceId
+          in: path
+          description: deviceId to get
+          required: true
+          schema:
+            type: integer
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+        '404':
+          description: Device not found
+      
+    put:
+      tags:
+        - "devices"
+      summary: update a device
+      description: update a device by id
+      
+      parameters:
+        - name: deviceId
+          in: path
+          description: deviceId to update
+          required: true
+          schema:
+            type: integer
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/device'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+        '404':
+          description: Device not found
+        '405':
+          description: Invalid input
+          
+    delete:
+      tags:
+        - "devices"
+    
+      parameters:
+        - name: deviceId
+          in: path
+          description: deviceId to delete
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Device not found
+
+  # entities stuff
+  /entities:
+    post:
+      tags:
+        - "entities"
+      summary: Add new entity
+      description: Add a new entity
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/entity'
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity'
+        '405':
+          description: Invalid input
+
+  /entities/{entityId}:
+
+    put:
+      tags:
+          - "entities"
+      summary: update an entity
+      description: update an entity by id
+
+      parameters:
+        - name: entityId
+          in: path
+          description: EntityId to update
+          required: true
+          schema:
+            type: integer
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/entity'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entity'
+        '404':
+          description: Entity not found
+        '405':
+          description: Invalid input
+    
+    delete:
+      tags:
+          - "entities"
+      summary: Delete an entity
+      description: Delete an entity by id
+
+      parameters:
+        - name: entityId
+          in: path
+          description: EntityId to delete
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Entity not found
+
+  # irCode stuff
+  /ircodes:
+    post:
+      tags:
+        - "ircodes"
+      summary: Add new irCode
+      description: Add a new irCode
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/irCode'
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/irCode'
+        '405':
+          description: Invalid input
+              
+  /ircodes/send:
+    put:
+      tags:
+        - "ircodes"
+      summary: send irCode
+      description: send an irCode
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                boardId:
+                  type: integer
+                  example: 1
+                rawData:
+                  type: array
+                  items:
+                    type: integer
+                  example: [123, 200, 600, 111, 420, 69]
+      
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Board not found
+        '405':
+          description: Invalid input
+
+  /ircodes/record:
+    get:
+      tags:
+        - "ircodes"
+      summary: Record an IrCode
+      description: Record an IrCode from board, might take a while(not longer than 10 sec)
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                boardId:
+                  type: integer
+                  example: 1
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                example: [123, 200, 600, 111, 420, 69]
+                
+        '404':
+          description: Board not found
+        '405':
+          description: Invalid input
+        '500':
+          description: No irCode received
+
+  /ircodes/{irCodeId}:
+    put:
+      tags:
+        - "ircodes"
+      summary: Update an irCode
+      description: Update an irCode by id
+
+      parameters:
+        - name: irCodeId
+          in: path
+          description: irCodeId to update
+          required: true
+          schema:
+            type: integer
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/irCode'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/irCode'
+        '404':
+          description: irCode not found
+        '405':
+          description: Invalid input
+
+    delete:
+      tags:
+        - "ircodes"
+      summary: Delete an irCode
+      description: Delete an irCode by id
+
+      parameters:
+        - name: irCodeId
+          in: path
+          description: irCodeId to delete
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: irCode not found
+
+
 components:
   schemas:
-    boards:
-      required:
-        - name
-        - photoUrls
+    board:
       type: object
       properties:
         id:
           type: string
           format: int
-          example: 12:34:56:78:9A:BC
+          example: 123456789ABC
         name:
           type: string
           example: example board esp8266
-        tags:
-          type: array
-          xml:
-            wrapped: true
-        status:
+      required:
+        - name
+    
+    devices:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 1
+          name:
+            type: string
+            example: Example device
+          enableUpdate:
+            type: boolean
+            example: true
+
+    device:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        boardId:
+          type: integer
+          example: 1
+        name:
           type: string
-          description: pet status in the store
-          enum:
-            - available
-            - pending
-            - sold
+          example: Example device
+        enableUpdate:
+          type: boolean
+          example: true
+        blocklyWorkspace:
+          type: string
+          example: '...'
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/entity'
+        irCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/irCode'
+        
+    irCode:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        deviceId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Example IR code name
+        description:
+          type: string
+          example: Example IR code description
+        rawData:
+          type: array
+          items:
+            type: integer
+          example: [123, 200, 600, 111, 420, 69]
+
+
+    entity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        deviceId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Example entity
+        icon:
+          type: string
+          example: mdi:unicorn
+        type:
+          type: string
+          example: 'switch'
+        subtype:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/entity-switch'
+            - $ref: '#/components/schemas/entity-select'
+            - $ref: '#/components/schemas/entity-button'
+            - $ref: '#/components/schemas/entity-number'
+    
+    entity-switch:
+      type: object
+      properties:
+        entityId:
+          type: integer
+          example: 1
+        state:
+          type: boolean
+          example: true
+
+    entity-select:
+      type: object
+      properties:
+        entityId:
+          type: integer
+          example: 1
+        options:
+          type: array
+          items:
+              type: string
+              example: ['option 1', 'option 2', 'option 3']
+        state:
+          type: string
+          example: 'option 1'
+    
+    entity-button:
+      type: object
+      properties:
+        entityId:
+          type: integer
+          example: 1
+
+    entity-number:
+      type: object
+      properties:
+        entityId:
+          type: integer
+          example: 1
+        max:
+          type: number
+          example: 100
+        min:
+          type: number
+          example: 1
+        step:
+          type: number
+          example: 1.0
+        isSlider:
+          type: boolean
+          example: true
+        state:
+          type: number
+          example: 69
+        
