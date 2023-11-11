@@ -39,6 +39,7 @@ paths:
       description: Connect new board to the server
 
       requestBody:
+        description: '`required: name`'
         content:
           application/json:
             schema:
@@ -94,6 +95,7 @@ paths:
             type: string
 
       requestBody:
+        description: '`required: name`'
         content:
           application/json:
             schema:
@@ -173,6 +175,7 @@ paths:
       description: Create a new device
 
       requestBody:
+        description: '`required: name`'
         content:
           application/json:
             schema:
@@ -232,6 +235,7 @@ paths:
             type: integer
       
       requestBody:
+        description: '`required: boardId, name, enableUpdate, blocklyWorkspace, blocklyJS`'
         content:
           application/json:
             schema:
@@ -276,6 +280,7 @@ paths:
       description: Add a new entity
 
       requestBody:
+        description: '`required: deviceId, name, icon, type, subtype`'
         content:
           application/json:
             schema:
@@ -308,6 +313,7 @@ paths:
             type: integer
       
       requestBody:
+        description: '`required: deviceId, name, icon, type, subtype`'
         content:
           application/json:
             schema:
@@ -354,6 +360,7 @@ paths:
       description: Add a new irCode
 
       requestBody:
+        description: '`required: deviceId, name, description, rawData`'
         content:
           application/json:
             schema:
@@ -377,6 +384,7 @@ paths:
       description: send an irCode
 
       requestBody:
+        description: '`required: boardId, rawData`'
         content:
           application/json:
             schema:
@@ -407,6 +415,7 @@ paths:
       description: Record an IrCode from board, might take a while(not longer than 10 sec)
 
       requestBody:
+        description: '`required: boardId`'
         content:
           application/json:
             schema:
@@ -450,6 +459,7 @@ paths:
             type: integer
       
       requestBody:
+        description: '`required: name, description, rawData`'
         content:
           application/json:
             schema:
@@ -534,6 +544,9 @@ components:
           type: boolean
           example: true
         blocklyWorkspace:
+          type: string
+          example: '...'
+        blocklyJS:
           type: string
           example: '...'
         entities:
