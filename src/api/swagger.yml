@@ -52,7 +52,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/board'
-        '405':
+        '400':
           description: Invalid input
 
   /boards/{boardId}:
@@ -192,7 +192,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/device'
-        '405':
+        '400':
           description: Invalid input
 
   /devices/{deviceId}:
@@ -248,10 +248,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/device'
+        '400':
+          description: Invalid input
         '404':
           description: Device not found
-        '405':
-          description: Invalid input
           
     delete:
       tags:
@@ -293,7 +293,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/entity'
-        '405':
+        '400':
           description: Invalid input
 
   /entities/{entityId}:
@@ -326,10 +326,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/entity'
+        '400':
+          description: Invalid input
         '404':
           description: Entity not found
-        '405':
-          description: Invalid input
     
     delete:
       tags:
@@ -373,7 +373,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/irCode'
-        '405':
+        '400':
           description: Invalid input
               
   /ircodes/send:
@@ -402,10 +402,10 @@ paths:
       responses:
         '200':
           description: Successful operation
+        '400':
+          description: Invalid input
         '404':
           description: Board not found
-        '405':
-          description: Invalid input
 
   /ircodes/record:
     get:
@@ -436,10 +436,10 @@ paths:
                   type: integer
                 example: [123, 200, 600, 111, 420, 69]
                 
+        '400':
+          description: Invalid input
         '404':
           description: Board not found
-        '405':
-          description: Invalid input
         '500':
           description: No irCode received
 
@@ -472,10 +472,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/irCode'
+        '400':
+          description: Invalid input
         '404':
           description: irCode not found
-        '405':
-          description: Invalid input
 
     delete:
       tags:
