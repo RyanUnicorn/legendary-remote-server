@@ -74,16 +74,17 @@ const route = useRoute();
   margin-bottom: 2.5rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
   fill: var(--color-accent);
 
   & svg {
     height: 2.2rem;
+    padding-right: 1.5rem;
   }
 
   & h1 {
     font-weight: bolder;
     font-size: 1.5rem;
+    padding-right: 0.5rem;
   }
 }
 
