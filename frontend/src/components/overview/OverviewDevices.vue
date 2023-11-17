@@ -7,18 +7,6 @@ import OverviewDevicesInfoCard from './OverviewDevicesInfoCard.vue';
     { id:  1, name: 'Item  1', enableUpdate: false, Entities: 3 },
     { id:  2, name: 'Item  2', enableUpdate:  true, Entities: 7 },
     { id:  3, name: 'Item  3', enableUpdate: false, Entities: 5 },
-    { id:  4, name: 'Item  4', enableUpdate:  true, Entities: 2 },
-    { id:  5, name: 'Item  5', enableUpdate:  true, Entities: 8 },
-    { id:  6, name: 'Item  6', enableUpdate:  true, Entities: 9 },
-    { id:  7, name: 'Item  7', enableUpdate:  true, Entities: 8 },
-    { id:  8, name: 'Item  8', enableUpdate: false, Entities: 3 },
-    { id:  9, name: 'Item  9', enableUpdate:  true, Entities: 8 },
-    { id: 10, name: 'Item 10', enableUpdate:  true, Entities: 2 },
-    { id: 11, name: 'Item 11', enableUpdate: false, Entities: 1 },
-    { id: 12, name: 'Item 12', enableUpdate:  true, Entities: 1 },
-    { id: 13, name: 'Item 13', enableUpdate:  true, Entities: 3 },
-    { id: 14, name: 'Item 14', enableUpdate: false, Entities: 4 },
-    { id: 15, name: 'Item 15', enableUpdate:  true, Entities: 2 },
   ];
 </script>
 
