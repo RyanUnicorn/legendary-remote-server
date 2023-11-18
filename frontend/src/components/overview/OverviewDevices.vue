@@ -31,9 +31,9 @@ import OverviewDevicesInfoCard from './OverviewDevicesInfoCard.vue';
 <style scoped>
 
 .fram {
-  padding-top: 24px;
+  padding-top: 12px;
   padding-left: 24px;
-  min-height: 380px;
+  height: 395px;
   & h3{
     font-weight: bolder;
     font-size: 1.5rem;
@@ -44,7 +44,7 @@ import OverviewDevicesInfoCard from './OverviewDevicesInfoCard.vue';
   display: flex;
   max-width: calc(100% - 24px);
   height: 350px;
-  padding-top: 30px;
+  padding-top: 24px;
   padding-left: 24px;
   padding-right: 24px;
   flex-wrap: wrap;
