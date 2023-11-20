@@ -15,7 +15,7 @@
   /* padding: 0; */
   height: 100%;
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: repeat(2, calc((100vh - var(--spacing-const) * 5) / 2));
   gap: var(--spacing-const);
 }
 </style>
