@@ -98,14 +98,13 @@
 
 .frame {
   position: relative;
-  height: 100%;
   & h3{
     position: absolute;
     top: 1.2rem;
     left: 2rem;
     font-weight: bold;
     font-size: 1.5rem;
-    color: var(--color-text-mute  );
+    color: var(--color-text-mute);
   }
 }
 .container {
