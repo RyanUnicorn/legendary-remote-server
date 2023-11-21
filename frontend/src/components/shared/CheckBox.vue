@@ -2,16 +2,19 @@
   import { onMounted, ref, watchEffect } from 'vue';
 
   const props = defineProps({
-    initialState: Boolean,
+    modelValue: Boolean,
   }); 
 
   const emit = defineEmits([
     'update:modelValue'
   ]);
 
-  const checked = ref(props.initialState || false);
+  const checked = ref(props.modelValue || false);
 
   onMounted(() => {
+    watchEffect(() => {
+      checked.value = props.modelValue;
+    });
     watchEffect(() => {
       emit('update:modelValue', checked.value);
     });
