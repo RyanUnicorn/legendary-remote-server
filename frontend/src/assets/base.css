@@ -70,3 +70,24 @@ body {
 a {
   text-decoration: none;
 }
+
+select {
+  border: none;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  padding-inline: 1em;
+  padding-block: 0.5em;
+  font-size: 1em;
+
+  box-shadow:  5px  5px 16px #bebebe,
+              -5px -5px 16px #ffffff;
+  border-radius: var(--border-radius);
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: var(--color-accent-mute) solid 2px;
+  }
+}
