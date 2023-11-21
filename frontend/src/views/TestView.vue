@@ -1,9 +1,17 @@
 <script setup>
-
+import EditableTextInline from '../components/shared/EditableTextInline.vue';
+function handleRename(name) {
+    console.log('renameing to', name);
+}
 </script>
 
 <template>
-    i am test view
+    <div>
+        <EditableTextInline
+            text="WOW"
+            @rename="handleRename"
+        />
+    </div>
 </template>
 
 <style scoped>

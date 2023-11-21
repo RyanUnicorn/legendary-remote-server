@@ -16,7 +16,7 @@ import { nextTick, ref, watchEffect } from 'vue';
     'editing'
   ]);
   const emits = defineEmits([
-    'finish'
+    'finish', // finish(bool edited, string content)
   ])
 
   const textInput = ref(null);
@@ -55,6 +55,7 @@ import { nextTick, ref, watchEffect } from 'vue';
 <style scoped>
   .editable-text-wrapper {
     width: fit-content;
+    font-size: inherit;
   }
 
   .editable-text-text {
@@ -71,7 +72,7 @@ import { nextTick, ref, watchEffect } from 'vue';
     font-size: 1em;
     font-weight: inherit;
     padding: 0;
-    width: 10rem;
+    width: 10em;
 
     &:focus {
       border-radius: 5px;
