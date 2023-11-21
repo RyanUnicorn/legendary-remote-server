@@ -34,16 +34,37 @@ import { nextTick, ref, watchEffect } from 'vue';
 </script>
 
 <template>
-  <form
-    @submit.prevent="$emit('finish', true, myText)"
-    @keyup.esc="$emit('finish', false, '')"
-  >
-    <input ref="textInput" @blur="$emit('finish', false, '')" class="editable-text" :class="{editing: editing}" type="text" v-model="myText" :disabled="!editing">
-  </form>
+  <div class="editable-text-wrapper">
+
+    <div v-if="!editing" class="editable-text-text">
+      {{ myText }}
+    </div>
+
+    <input type="text"
+      v-if="editing"
+      class="editable-text-input"
+      ref="textInput"
+      v-model="myText"
+      @keyup.enter="$emit('finish', true, myText)"
+      @blur="$emit('finish', false, '')" 
+      @keyup.esc="$emit('finish', false, '')"
+    >
+  </div>
 </template>
 
 <style scoped>
-  .editable-text {
+  .editable-text-wrapper {
+    width: fit-content;
+  }
+
+  .editable-text-text {
+    width: fit-content;
+    color: var(--color-text);
+    font-size: 1em;
+    font-weight: inherit;
+  }
+
+  .editable-text-input {
     background: none;
     border: none;
     color: var(--color-text);
@@ -51,11 +72,6 @@ import { nextTick, ref, watchEffect } from 'vue';
     font-weight: inherit;
     padding: 0;
     width: 10rem;
-
-    &:disabled {
-      color: var(--color-text);
-      cursor: text;
-    }
 
     &:focus {
       border-radius: 5px;
