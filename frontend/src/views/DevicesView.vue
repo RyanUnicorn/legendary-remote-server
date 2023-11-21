@@ -31,15 +31,15 @@
   /* padding: 0; */
   height: 100%;
   display: grid;
-  gap: 24px;
-  grid-template-rows: 1fr 3.5fr;
+  gap: var(--spacing-const);
+  grid-template-rows: 1fr 3fr;
 }
 
 .right {
   /* padding: 0; */
   height: 100%;
   display: grid;
-  gap: 24px;
+  gap: var(--spacing-const);
   grid-template-rows: 1fr 1fr;
 }
 </style>
