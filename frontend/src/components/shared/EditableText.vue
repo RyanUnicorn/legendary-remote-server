@@ -56,6 +56,7 @@ import { nextTick, ref, watchEffect } from 'vue';
   .editable-text-wrapper {
     width: fit-content;
     font-size: inherit;
+    font-weight: inherit;
   }
 
   .editable-text-text {

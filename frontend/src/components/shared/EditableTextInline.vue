@@ -42,6 +42,7 @@
     display: flex;
     /* align-items: center; */
     font-size: inherit;
+    font-weight: inherit;
     gap: 0.5em;
   }
 
