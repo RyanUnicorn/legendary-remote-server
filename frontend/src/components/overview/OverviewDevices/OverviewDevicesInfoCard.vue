@@ -43,7 +43,7 @@
 <style scoped>
 .overviewDevicesInfoCard {
     width: 325px;
-    height: 130px;
+    height: 129px;
     padding-top: 12px;
     padding-left: 24px;
     display: flex;
@@ -61,7 +61,7 @@
     & h2 {
         color: var(--color-text-mute);
         text-decoration: none;
-        margin-bottom: 12px;
+        margin-bottom: 9px;
         font-size: 1rem;
     }
 

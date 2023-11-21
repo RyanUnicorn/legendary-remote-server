@@ -12,7 +12,7 @@
 <style scoped>
 .overviewDevicesAddingCard {
     width: 325px;
-    height: 130px;
+    height: 129px;
     display: flex;
     align-items: center;
     justify-content: center;
