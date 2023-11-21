@@ -17,6 +17,7 @@
 <style scoped>
 
   .blocklyWrapper{
+    min-width: 300px;
     position: relative;
     padding: var(--spacing-const);
     
@@ -37,6 +38,8 @@
   .editButton{
     height: 10%;
     width: 10%;
+    min-width: 70px;
+    min-height: 20px;
 
     position: absolute;
     top: 1.2rem;
