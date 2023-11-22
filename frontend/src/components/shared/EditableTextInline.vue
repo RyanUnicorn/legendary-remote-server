@@ -26,6 +26,7 @@
     <EditableText
       :editing="editing"
       :text="text"
+      :adaptiveWidth="true"
       @finish="handleFinish"
     />
     <button class="icon-btn"

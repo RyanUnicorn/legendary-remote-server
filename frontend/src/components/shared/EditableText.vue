@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, ref, watchEffect } from 'vue';
+import { computed, nextTick, ref, watchEffect } from 'vue';
 
   /**
    * This is a editable text componet, the passed in prop 'text' means the text being 
@@ -13,7 +13,8 @@ import { nextTick, ref, watchEffect } from 'vue';
 
   const props = defineProps([
     'text',
-    'editing'
+    'editing',
+    'adaptiveWidth',
   ]);
   const emits = defineEmits([
     'finish', // finish(bool edited, string content)
@@ -28,6 +29,14 @@ import { nextTick, ref, watchEffect } from 'vue';
       textInput.value.focus();
     } else {
       myText.value = props.text;
+    }
+  });
+
+  const inputWidth = computed(() => {
+    if(props.adaptiveWidth) {
+      return `calc(0.6em * ${myText.value?.length} + 1em)`;
+    } else {
+      return '8em';
     }
   });
 
@@ -68,13 +77,15 @@ import { nextTick, ref, watchEffect } from 'vue';
   }
 
   .editable-text-input {
-    background: none;
+    background: var(--color-background);
     border: none;
     color: inherit;
     font-size: 1em;
     font-weight: inherit;
     padding: 0;
-    width: 10em;
+    /* width: 10em; */
+    width: v-bind(inputWidth);
+    z-index: 2;
 
     &:focus {
       border-radius: 5px;
