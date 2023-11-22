@@ -11,19 +11,21 @@
 
   const checked = ref(props.modelValue || false);
 
+  function handleClick() {
+    checked.value = !checked.value;
+    emit('update:modelValue', checked.value);
+  }
+
   onMounted(() => {
     watchEffect(() => {
       checked.value = props.modelValue;
-    });
-    watchEffect(() => {
-      emit('update:modelValue', checked.value);
     });
   })
 
 </script>
 
 <template>
-  <button @click="checked = !checked" class="checkbox" :class="{ 'checkbox-checked': checked }"></button>
+  <button @click="handleClick" class="checkbox" :class="{ 'checkbox-checked': checked }"></button>
 </template>
 
 <style>
