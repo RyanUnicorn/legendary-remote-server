@@ -10,10 +10,12 @@
   const currentId = route.params.id;
 
   const device = ref([]);
+  const boardList = ref([]);
+
   function fetchaDevice(id){
     device.value = {
       id: 1,
-      boardId: 1,
+      boardId: '123456789ABC',
       name: "Example device",
       enableUpdate: true,
       blocklyWorkspace: "...",
@@ -64,10 +66,42 @@
     }
   }
 
+  async function fetchBoardList() {
+    /**
+     * TODO api call here
+     */
+    boardList.value = [
+      {
+        id: '123456789ABC',
+        name: 'A ESP board',
+      },
+      {
+        id: '23456789ABCD',
+        name: 'Living room',
+      },
+      {
+        id: '3456789ABCDE',
+        name: 'Bathroom',
+      },
+      {
+        id: '456789ABCDEF',
+        name: 'Bedroom',
+      },
+      {
+        id: '56789ABCDEF1',
+        name: 'Basement',
+      },
+      {
+        id: '6789ABCDEF12',
+        name: 'Kitchen',
+      },
+    ];
+  }
+
   function handleIRCodeRename(id, name) {
     console.log('renaming', id, 'to', name);
     /**
-     * TODO: api call to unpair the board
+     * TODO: api call to update irCode
      */
     fetchaDevice();
   }
@@ -75,7 +109,7 @@
   function handleIRCodeRedescribe(id, description) {
     console.log('redescribe', id, 'to', description);
     /**
-     * TODO: api call to unpair the board
+     * TODO: api call to update irCode
      */
     fetchaDevice();
   }
@@ -83,20 +117,34 @@
   function handleIRCodeDelete(id) {
     console.log('delete', id);
     /**
-     * TODO: api call to unpair the board
+     * TODO: api call to update irCode
+     */
+    fetchaDevice();
+  }
+
+  function handleUpdateDeviceInfo(device) {
+    console.log('updating device with body', device);
+    /**
+     * TODO api call to update device
      */
     fetchaDevice();
   }
 
   onMounted(() => {
     fetchaDevice(currentId);
+    fetchBoardList();
   });
+
 </script>
 
 <template>
   <div class="deviceview-grid">
     <div class="left">
-        <DeviceName/>
+        <DeviceName
+          :device-info="device"
+          :board-list="boardList"
+          @update-device-info="handleUpdateDeviceInfo"
+        />
         <DeviceEntities/>
     </div>
     <div class="right">
