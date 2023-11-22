@@ -57,11 +57,12 @@ import { nextTick, ref, watchEffect } from 'vue';
     width: fit-content;
     font-size: inherit;
     font-weight: inherit;
+    color: inherit;
   }
 
   .editable-text-text {
     width: fit-content;
-    color: var(--color-text);
+    color: inherit;
     font-size: 1em;
     font-weight: inherit;
   }
@@ -69,7 +70,7 @@ import { nextTick, ref, watchEffect } from 'vue';
   .editable-text-input {
     background: none;
     border: none;
-    color: var(--color-text);
+    color: inherit;
     font-size: 1em;
     font-weight: inherit;
     padding: 0;

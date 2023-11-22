@@ -43,6 +43,7 @@
     /* align-items: center; */
     font-size: inherit;
     font-weight: inherit;
+    color: inherit;
     gap: 0.5em;
   }
 
