@@ -3,12 +3,29 @@
   import DeviceIRCodesAddingCard from './DeviceIRCodes/IRCodesAddingCard.vue';
   import DeviceIRCodesInfoCard from './DeviceIRCodes/IRCodesInfoCard.vue';
   import { onMounted, ref } from 'vue';
+
+  const props = defineProps([
+    'IRCodes',
+  ]);
+
+  const emit = defineEmits([
+    'rename',
+    'redescribe',
+    'delete',
+  ])
+
 </script>
 
 <template>
   <div class="neu-box IRCodeFrame">
     <h3>IR Code</h3>
     <div class="container">
+      <DeviceIRCodesInfoCard v-for="IRCode in IRCodes" :key="IRCodes.id"
+        :IRCodedata="IRCode"
+        @rename = "(id, name) => $emit('rename', id, name)"
+        @redescribe = "(id, description) => $emit('redescribe', id, description)"
+        @delete = "(id) => $emit('delete', id)"
+      />
       <DeviceIRCodesAddingCard/>
     </div>
   </div>
@@ -44,8 +61,11 @@
     flex-wrap: wrap;
     gap: var(--spacing-const);
     justify-content: center;
+    align-content: flex-start;
     flex-direction: row;
     overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: calc(1 * var(--spacing-const));
 
     &::-webkit-scrollbar {
         width: 1rem;
