@@ -24,12 +24,93 @@
         {
           id: 1,
           deviceId: 1,
-          name: "Example entity",
+          name: "A Switch",
           icon: "mdi:unicorn",
           type: "switch",
           subtype: {
             entityId: 1,
             state: true,
+          }
+        },
+        {
+          id: 2,
+          deviceId: 1,
+          name: "A Number",
+          icon: "mdi:unicorn",
+          type: "number",
+          subtype: {
+            entityId: 1,
+            max: 100,
+            min: 1,
+            step: 1,
+            isSlider: true,
+            state: 69,
+          }
+        },
+        {
+          id: 3,
+          deviceId: 1,
+          name: "A Select",
+          icon: "mdi:unicorn",
+          type: "select",
+          subtype: {
+            entityId: 1,
+            options: [
+              'option1',
+              'option2',
+              'option3',
+            ],
+            state: 'option1',
+          }
+        },
+        {
+          id: 4,
+          deviceId: 1,
+          name: "A Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 5,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 6,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 7,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 8,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
           }
         },
       ],
@@ -145,6 +226,14 @@
     fetchaDevice();
   }
 
+  function handleRenameEntity(id, name) {
+    console.log(id, name);
+  }
+
+  function handleDeleteEntity(id) {
+    console.log(id);
+  }
+
   onMounted(() => {
     fetchaDevice(currentId);
     fetchBoardList();
@@ -161,7 +250,11 @@
           @update-device-info="handleUpdateDeviceInfo"
           @delete-device="handleDeleteDevice"
         />
-        <DeviceEntities/>
+        <DeviceEntities
+          :entities="device.entities"
+          @rename-entity="handleRenameEntity"
+          @delete-entity="handleDeleteEntity"
+        />
     </div>
     <div class="right">
         <DeviceBlocklyCode/>
