@@ -130,6 +130,13 @@
     fetchaDevice();
   }
 
+  function handleDeleteDevice() {
+    console.log('deleting device');
+    /**
+     * TODO api call to delete device
+     */
+  }
+
   function handleIRCodeRecord(id) {
     console.log('record', id);
     /**
@@ -152,6 +159,7 @@
           :device-info="device"
           :board-list="boardList"
           @update-device-info="handleUpdateDeviceInfo"
+          @delete-device="handleDeleteDevice"
         />
         <DeviceEntities/>
     </div>

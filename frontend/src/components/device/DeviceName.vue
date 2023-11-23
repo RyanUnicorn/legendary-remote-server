@@ -10,6 +10,7 @@
 
   const emit = defineEmits([
     'updateDeviceInfo', // updateDeviceInfo(device);
+    'deleteDevice', // deleteDevice()
   ])
 
   const selectedBoard = ref(props.deviceInfo.boardId);
@@ -48,6 +49,13 @@
     });
   }
 
+  function handleDeleteDevice() {
+    const result = confirm('Are you sure you want to delete the whole device?\nThis CANNOT be undo!');
+    if(result) {
+      emit('deleteDevice');
+    }
+  }
+
 </script>
 
 <template>
@@ -57,6 +65,12 @@
       @rename="handleUpdateName"
     />
     
+    <button class="delete-btn neu-box"
+      @click="handleDeleteDevice"
+    >
+      DELETE
+    </button>
+
     <div class="form-wrapper">
       <div class="form-input-wrapper">
         <span>Use Board</span>
@@ -82,6 +96,29 @@
 </template>
 
 <style scoped>
+
+  .delete-btn {
+    position: absolute;
+    top: var(--spacing-const);
+    right: var(--spacing-const);
+
+    border: none;
+    background-color: var(--color-background);
+
+    font-size: 1rem;
+    color: var(--color-accent);
+
+    padding-inline: 1rem;
+    padding-block: 0.8rem;
+
+    transition: 200ms;
+    &:hover {
+      cursor: pointer;
+      color: var(--color-accent);
+      box-shadow:  7px  7px 20px #bebebe,
+                    -9px -9px 20px #ffffff;
+    }
+  }
 
   .form-wrapper {
     position: absolute;
