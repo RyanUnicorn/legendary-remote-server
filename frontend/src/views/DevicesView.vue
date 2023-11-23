@@ -228,10 +228,12 @@
 
   function handleRenameEntity(id, name) {
     console.log(id, name);
+    fetchaDevice();
   }
 
   function handleDeleteEntity(id) {
     console.log(id);
+    fetchaDevice();
   }
 
   onMounted(() => {
