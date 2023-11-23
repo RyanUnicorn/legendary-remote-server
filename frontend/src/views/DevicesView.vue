@@ -130,6 +130,14 @@
     fetchaDevice();
   }
 
+  function handleIRCodeRecord(id) {
+    console.log('record', id);
+    /**
+     * TODO: api call to unpair the board
+     */
+    fetchaDevice();
+  }
+
   onMounted(() => {
     fetchaDevice(currentId);
     fetchBoardList();
@@ -154,6 +162,7 @@
           @rename="handleIRCodeRename"
           @redescribe="handleIRCodeRedescribe"
           @delete="handleIRCodeDelete"
+          @record="handleIRCodeRecord"
         />
     </div>
   </div>

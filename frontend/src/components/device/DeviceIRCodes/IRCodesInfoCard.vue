@@ -2,8 +2,9 @@
     import { ref } from 'vue';
     import DropDown from '../../shared/DropDown.vue';
     import EditableText from '../../shared/EditableText.vue';
+    import PopUp from './IRCodePopUp.vue';
 
-    const options = ['Rename', 'Redescribe', 'Delete', 'Record'];
+    const options = ['Rename', 'Redescribe', 'Record', 'Delete'];
 
     const props = defineProps([
         'IRCodedata',
@@ -13,6 +14,7 @@
         'rename',
         'redescribe',
         'delete',
+        'record',
     ])
 
     const editingName = ref(false);
@@ -29,6 +31,11 @@
             case 'Delete':
                 emit('delete', props.IRCodedata.id);
                 break;
+            case 'Record':
+                popUPswitch();
+                emit('record', props.IRCodedata.id);
+                
+                break;
         }
     }
 
@@ -44,6 +51,12 @@
             emit('redescribe', props.IRCodedata.id, content);
         }
         editingDescription.value = false;
+    }
+
+    const isPopUp = ref(false);
+
+    function popUPswitch(){
+        isPopUp.value = !isPopUp.value;
     }
 
 </script>
@@ -64,6 +77,11 @@
             :editing="editingDescription"
             @finish="handleEditDescription" 
             class="description"
+        />
+        <PopUp 
+            :isModalOpen = "isPopUp"
+            @close="popUPswitch"
+            class="PopUp"
         />
     </div>
 </template>
@@ -101,5 +119,9 @@
         top: 1rem;
         right: 0.5rem;
         position: absolute;
+    }
+
+    .PopUp{
+
     }
 </style>
