@@ -59,7 +59,7 @@
     }
 
     function saveIRCode(boardId, receiveRawdata){
-        emit('saveIRCode', boardId, receiveRawdata);
+        emit('saveIRCode', boardId, receiveRawdata, props.IRCodedata.id, props.IRCodedata.deviceId);
     }
 
 </script>

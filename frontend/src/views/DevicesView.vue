@@ -203,8 +203,8 @@
     fetchaDevice();
   }
 
-  function handleSavingIRCode(id, receiveRawdata) {
-    console.log('Save IRCode', receiveRawdata, "BoardID", id);
+  function handleSavingIRCode( boardId, receiveRawdata, IRCodeId, deviceId) {
+    console.log('Save IRCode', receiveRawdata, "BoardID", boardId, "IRCodeID", IRCodeId, "DeviceID", deviceId);
     /**
      * TODO: api call to unpair the board
      */

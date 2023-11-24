@@ -28,7 +28,7 @@
         @rename = "(id, name) => $emit('rename', id, name)"
         @redescribe = "(id, description) => $emit('redescribe', id, description)"
         @delete = "(id) => $emit('delete', id)"
-        @saveIRCode = "(id, receiveRawdata) => $emit('saveIRCode', id, receiveRawdata)"
+        @saveIRCode = "(boardId, receiveRawdata, IRCodeId, deviceId) => $emit('saveIRCode', boardId, receiveRawdata, IRCodeId, deviceId)"
       />
       <DeviceIRCodesAddingCard/>
     </div>
