@@ -1,0 +1,329 @@
+<script setup>
+  import DeviceName from '../components/device/DeviceName.vue';
+  import DeviceEntities from '../components/device/DeviceEntities.vue';
+  import DeviceBlocklyCode from '../components/device/DeviceBlocklyCode.vue';
+  import DeviceIRCodes from '../components/device/DeviceIRCodes.vue';
+  import { useRoute } from 'vue-router';
+  import { ref, onMounted } from 'vue';
+
+  const route = useRoute();
+  const currentId = route.params.id;
+
+  const device = ref([]);
+  const boardList = ref([]);
+
+  function fetchaDevice(id){
+    device.value = {
+      id: 1,
+      boardId: '123456789ABC',
+      name: "Example device",
+      enableUpdate: true,
+      blocklyWorkspace: "...",
+      blocklyJS: "...",
+      entities:[
+        {
+          id: 1,
+          deviceId: 1,
+          name: "A Switch",
+          icon: "mdi:unicorn",
+          type: "switch",
+          subtype: {
+            entityId: 1,
+            state: true,
+          }
+        },
+        {
+          id: 2,
+          deviceId: 1,
+          name: "A Number",
+          icon: "mdi:unicorn",
+          type: "number",
+          subtype: {
+            entityId: 1,
+            max: 100,
+            min: 1,
+            step: 1,
+            isSlider: true,
+            state: 69,
+          }
+        },
+        {
+          id: 3,
+          deviceId: 1,
+          name: "A Select",
+          icon: "mdi:unicorn",
+          type: "select",
+          subtype: {
+            entityId: 1,
+            options: [
+              'option1',
+              'option2',
+              'option3',
+            ],
+            state: 'option1',
+          }
+        },
+        {
+          id: 4,
+          deviceId: 1,
+          name: "A Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 5,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 6,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 7,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+        {
+          id: 8,
+          deviceId: 1,
+          name: "Filler Button",
+          icon: "mdi:unicorn",
+          type: "button",
+          subtype: {
+            entityId: 1,
+          }
+        },
+      ],
+      irCodes: [
+        {
+          id: 1,
+          deviceId: 1,
+          name: "Example 1 IR code name",
+          description: "Example IR code description",
+          rawData: [
+            123,
+            200,
+            600,
+            111,
+            420,
+            69
+          ]
+        },
+        {
+          id: 2,
+          deviceId: 1,
+          name: "Example 2 IR code name",
+          description: "Example 2 IR code description",
+          rawData: [
+            222,
+            222,
+            600,
+            111,
+            420,
+            69
+          ]
+        },
+      ]
+    }
+  }
+
+  async function fetchBoardList() {
+    /**
+     * TODO api call here
+     */
+    boardList.value = [
+      {
+        id: '123456789ABC',
+        name: 'A ESP board',
+      },
+      {
+        id: '23456789ABCD',
+        name: 'Living room',
+      },
+      {
+        id: '3456789ABCDE',
+        name: 'Bathroom',
+      },
+      {
+        id: '456789ABCDEF',
+        name: 'Bedroom',
+      },
+      {
+        id: '56789ABCDEF1',
+        name: 'Basement',
+      },
+      {
+        id: '6789ABCDEF12',
+        name: 'Kitchen',
+      },
+    ];
+  }
+
+  function handleIRCodeRename(id, name) {
+    console.log('renaming', id, 'to', name);
+    /**
+     * TODO: api call to update irCode
+     */
+    fetchaDevice();
+  }
+
+  function handleIRCodeRedescribe(id, description) {
+    console.log('redescribe', id, 'to', description);
+    /**
+     * TODO: api call to update irCode
+     */
+    fetchaDevice();
+  }
+
+  function handleIRCodeDelete(id) {
+    console.log('delete', id);
+    /**
+     * TODO: api call to update irCode
+     */
+    fetchaDevice();
+  }
+
+  function handleSavingIRCode( boardId, receiveRawdata, IRCodeId, deviceId) {
+    console.log('Save IRCode', receiveRawdata, "BoardID", boardId, "IRCodeID", IRCodeId, "DeviceID", deviceId);
+    /**
+     * TODO: api call to unpair the board
+     */
+    fetchaDevice();
+  }
+
+  function handleUpdateDeviceInfo(device) {
+    console.log('updating device with body', device);
+    /**
+     * TODO api call to update device
+     */
+    fetchaDevice();
+  }
+
+  function handleDeleteDevice() {
+    console.log('deleting device');
+    /**
+     * TODO api call to delete device
+     */
+  }
+
+  function handleRenameEntity(id, name) {
+    console.log('renaming entity', id, name);
+    fetchaDevice();
+  }
+
+  function handleDeleteEntity(id) {
+    console.log('deleting entity', id);
+    fetchaDevice();
+  }
+
+  function handleNewNumber(entityname, options) {
+    console.log('new number', entityname, options);
+    fetchaDevice();
+  }
+
+  function handleNewSelect(entityname, options) {
+    console.log('new select', entityname, options);
+    fetchaDevice();
+  }
+
+  function handleNewButton(entityname) {
+    console.log('new button', entityname);
+    fetchaDevice();
+  }
+
+  function handleNewSwitch(entityname) {
+    console.log('new switch', entityname);
+    fetchaDevice();
+  }
+
+  function handleAddingIRCode() {
+    fetchaDevice();
+  }
+
+  onMounted(() => {
+    fetchaDevice(currentId);
+    fetchBoardList();
+  });
+
+</script>
+
+<template>
+  <div class="deviceview-grid">
+    <div class="left">
+        <DeviceName
+          :device-info="device"
+          :board-list="boardList"
+          @update-device-info="handleUpdateDeviceInfo"
+          @delete-device="handleDeleteDevice"
+        />
+        <DeviceEntities
+          :entities="device.entities"
+          @rename-entity="handleRenameEntity"
+          @delete-entity="handleDeleteEntity"
+          @new-number="handleNewNumber"
+          @new-select="handleNewSelect"
+          @new-button="handleNewButton"
+          @new-switch="handleNewSwitch"
+        />
+    </div>
+    <div class="right">
+        <DeviceBlocklyCode/>
+        <DeviceIRCodes
+          :IRCodes = "device.irCodes"
+          :boardId = "device.boardId"
+          :deviceId="device.id"
+          @rename="handleIRCodeRename"
+          @redescribe="handleIRCodeRedescribe"
+          @delete="handleIRCodeDelete"
+          @saveIRCode="handleSavingIRCode"
+          @addIRCode="handleAddingIRCode"
+        />
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.deviceview-grid {
+  /* padding: 0; */
+  height: 100%;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.left {
+  /* padding: 0; */
+  /* height: 100%; */
+  display: grid;
+  gap: var(--spacing-const);
+  grid-template-rows: 1fr 3fr;
+}
+
+.right {
+  /* padding: 0; */
+  height: 100%;
+  display: grid;
+  gap: var(--spacing-const);
+  grid-template-rows: 1fr 1fr;
+}
+</style>
