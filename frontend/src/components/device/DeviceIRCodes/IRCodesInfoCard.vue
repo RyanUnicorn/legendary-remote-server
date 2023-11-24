@@ -8,13 +8,14 @@
 
     const props = defineProps([
         'IRCodedata',
+        'boardId'
     ]);
 
     const emit = defineEmits([
         'rename',
         'redescribe',
         'delete',
-        'record',
+        'saveIRCode'
     ])
 
     const editingName = ref(false);
@@ -33,8 +34,6 @@
                 break;
             case 'Record':
                 popUPswitch();
-                emit('record', props.IRCodedata.id);
-                
                 break;
         }
     }
@@ -59,6 +58,10 @@
         isPopUp.value = !isPopUp.value;
     }
 
+    function saveIRCode(boardId, receiveRawdata){
+        emit('saveIRCode', boardId, receiveRawdata);
+    }
+
 </script>
 
 <template>
@@ -80,7 +83,9 @@
         />
         <PopUp 
             :isModalOpen = "isPopUp"
+            :boardId="props.boardId"
             @close="popUPswitch"
+            @saveIRCode="saveIRCode"
             class="PopUp"
         />
     </div>

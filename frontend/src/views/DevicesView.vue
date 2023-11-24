@@ -118,7 +118,7 @@
         {
           id: 1,
           deviceId: 1,
-          name: "Example IR code name",
+          name: "Example 1 IR code name",
           description: "Example IR code description",
           rawData: [
             123,
@@ -203,6 +203,14 @@
     fetchaDevice();
   }
 
+  function handleSavingIRCode(id, receiveRawdata) {
+    console.log('Save IRCode', receiveRawdata, "BoardID", id);
+    /**
+     * TODO: api call to unpair the board
+     */
+    fetchaDevice();
+  }
+
   function handleUpdateDeviceInfo(device) {
     console.log('updating device with body', device);
     /**
@@ -216,14 +224,6 @@
     /**
      * TODO api call to delete device
      */
-  }
-
-  function handleIRCodeRecord(id) {
-    console.log('record', id);
-    /**
-     * TODO: api call to unpair the board
-     */
-    fetchaDevice();
   }
 
   function handleRenameEntity(id, name) {
@@ -262,10 +262,11 @@
         <DeviceBlocklyCode/>
         <DeviceIRCodes
           :IRCodes = "device.irCodes"
+          :boardId = "device.boardId"
           @rename="handleIRCodeRename"
           @redescribe="handleIRCodeRedescribe"
           @delete="handleIRCodeDelete"
-          @record="handleIRCodeRecord"
+          @saveIRCode="handleSavingIRCode"
         />
     </div>
   </div>

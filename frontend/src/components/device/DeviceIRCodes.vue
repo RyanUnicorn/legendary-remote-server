@@ -6,13 +6,14 @@
 
   const props = defineProps([
     'IRCodes',
+    'boardId'
   ]);
 
   const emit = defineEmits([
     'rename',
     'redescribe',
     'delete',
-    'record',
+    'saveIRCode'
   ])
 
 </script>
@@ -23,10 +24,11 @@
     <div class="container">
       <DeviceIRCodesInfoCard v-for="IRCode in IRCodes" :key="IRCodes.id"
         :IRCodedata="IRCode"
+        :boardId="props.boardId"
         @rename = "(id, name) => $emit('rename', id, name)"
         @redescribe = "(id, description) => $emit('redescribe', id, description)"
         @delete = "(id) => $emit('delete', id)"
-        @record = "(id) => $emit('record', id)"
+        @saveIRCode = "(id, receiveRawdata) => $emit('saveIRCode', id, receiveRawdata)"
       />
       <DeviceIRCodesAddingCard/>
     </div>
