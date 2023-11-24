@@ -25,11 +25,6 @@ const router = createRouter({
       component: () => import('../views/SettingsView.vue')
     },
     {
-      path: '/devices',
-      name: 'devices',
-      component: () => import('../views/DevicesView.vue')
-    },
-    {
       path: '/devices/:id',
       name: 'devicesID',
       component: () => import('../views/DevicesView.vue')

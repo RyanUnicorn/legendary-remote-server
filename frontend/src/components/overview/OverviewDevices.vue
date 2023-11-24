@@ -1,8 +1,10 @@
 <script setup>
-  import { RouterLink } from 'vue-router'
+  import { RouterLink, useRouter } from 'vue-router'
   import OverviewDevicesAddingCard from './OverviewDevices/OverviewDevicesAddingCard.vue';
   import OverviewDevicesInfoCard from './OverviewDevices/OverviewDevicesInfoCard.vue';
   import { onMounted, ref } from 'vue';
+
+  const router = useRouter();
 
   const devices = ref([]);
 
@@ -71,6 +73,12 @@
     ]
   }
 
+  function addDevice(){
+    console.log("Create device.");
+    //api create_Device("My Device")
+    router.push('/devices/'+'1');
+  }
+
   onMounted(() => {
     fetchDevices();
   });
@@ -85,9 +93,7 @@
       <RouterLink v-for="data in devices" :key="data.id" :to="`/devices/${data.id}`">
         <OverviewDevicesInfoCard :deviceName="data.name" :entities="data.entityCount" :enableUpdate="data.enableUpdate"/>
       </RouterLink>
-      <RouterLink to = "/devices">
-        <OverviewDevicesAddingCard/>
-      </RouterLink>
+      <OverviewDevicesAddingCard @click="addDevice"/>
     </div>
   </div>
 </template>
