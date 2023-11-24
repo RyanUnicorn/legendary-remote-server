@@ -6,6 +6,10 @@
   const emit = defineEmits([
     'renameEntity', // renameEntity(id, name)
     'deleteEntity', // deleteEntity(id)
+    'newNumber', // newNumber(entityName, {min, max, step, isSlide})
+    'newSelect', // newSelect(entityName, {options:[...]})
+    'newButton', // newButton(entityName)
+    'newSwitch', // newSwitch(entityName)
   ]);
 
   const props = defineProps({
@@ -36,6 +40,10 @@
     <NewEntity
       v-if="!listing"
       @cancel="handleNewEntityCancel"
+      @new-number="(entityName, settings) => { $emit('newNumber', entityName, settings); listing = true; }"
+      @new-select="(entityName, settings) => { $emit('newSelect', entityName, settings); listing = true; }"
+      @new-button="(entityName) => { $emit('newButton', entityName); listing = true; }"
+      @new-switch="(entityName) => { $emit('newSwitch', entityName); listing = true; }"
     />
   </div>
 </template>

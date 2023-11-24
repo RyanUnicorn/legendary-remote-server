@@ -227,12 +227,32 @@
   }
 
   function handleRenameEntity(id, name) {
-    console.log(id, name);
+    console.log('renaming entity', id, name);
     fetchaDevice();
   }
 
   function handleDeleteEntity(id) {
-    console.log(id);
+    console.log('deleting entity', id);
+    fetchaDevice();
+  }
+
+  function handleNewNumber(entityname, options) {
+    console.log('new number', entityname, options);
+    fetchaDevice();
+  }
+
+  function handleNewSelect(entityname, options) {
+    console.log('new select', entityname, options);
+    fetchaDevice();
+  }
+
+  function handleNewButton(entityname) {
+    console.log('new button', entityname);
+    fetchaDevice();
+  }
+
+  function handleNewSwitch(entityname) {
+    console.log('new switch', entityname);
     fetchaDevice();
   }
 
@@ -256,6 +276,10 @@
           :entities="device.entities"
           @rename-entity="handleRenameEntity"
           @delete-entity="handleDeleteEntity"
+          @new-number="handleNewNumber"
+          @new-select="handleNewSelect"
+          @new-button="handleNewButton"
+          @new-switch="handleNewSwitch"
         />
     </div>
     <div class="right">
@@ -283,7 +307,7 @@
 
 .left {
   /* padding: 0; */
-  height: 100%;
+  /* height: 100%; */
   display: grid;
   gap: var(--spacing-const);
   grid-template-rows: 1fr 3fr;
