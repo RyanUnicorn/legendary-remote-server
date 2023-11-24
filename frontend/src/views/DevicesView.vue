@@ -256,6 +256,10 @@
     fetchaDevice();
   }
 
+  function handleAddingIRCode() {
+    fetchaDevice();
+  }
+
   onMounted(() => {
     fetchaDevice(currentId);
     fetchBoardList();
@@ -287,10 +291,12 @@
         <DeviceIRCodes
           :IRCodes = "device.irCodes"
           :boardId = "device.boardId"
+          :deviceId="device.id"
           @rename="handleIRCodeRename"
           @redescribe="handleIRCodeRedescribe"
           @delete="handleIRCodeDelete"
           @saveIRCode="handleSavingIRCode"
+          @addIRCode="handleAddingIRCode"
         />
     </div>
   </div>

@@ -76,6 +76,7 @@
             @finish="handleEditName"
         />
         <EditableText
+            :adaptive-width="true"
             :text="props.IRCodedata.description"
             :editing="editingDescription"
             @finish="handleEditDescription" 

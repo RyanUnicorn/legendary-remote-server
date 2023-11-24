@@ -6,15 +6,29 @@
 
   const props = defineProps([
     'IRCodes',
-    'boardId'
+    'boardId',
+    'deviceId'
   ]);
 
   const emit = defineEmits([
     'rename',
     'redescribe',
     'delete',
-    'saveIRCode'
+    'saveIRCode',
+    'addIRCode'
   ])
+
+  function addingIRCode(){
+    console.log("deviceId", props.deviceId, "Name", "My IRCode", "Description", "My description", "rawDara", [])
+    //api add new IRCode
+    // {
+    //   "deviceId": props.deviceId,
+    //   "name": "My IRCode",
+    //   "description": "My description",
+    //   "rawData": []
+    // }
+    emit('addIRCode');
+  }
 
 </script>
 
@@ -30,7 +44,7 @@
         @delete = "(id) => $emit('delete', id)"
         @saveIRCode = "(boardId, receiveRawdata, IRCodeId, deviceId) => $emit('saveIRCode', boardId, receiveRawdata, IRCodeId, deviceId)"
       />
-      <DeviceIRCodesAddingCard/>
+      <DeviceIRCodesAddingCard @click="addingIRCode"/>
     </div>
   </div>
 </template>

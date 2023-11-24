@@ -17,6 +17,7 @@
         transition: 200ms;
         color: var(--color-text-mute);
         fill: v-bind(color);
+        cursor: pointer;
 
         & svg {
             display: flex;
