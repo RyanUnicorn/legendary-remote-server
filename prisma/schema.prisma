@@ -15,7 +15,7 @@ model Admin {
 }
 
 model Board {
-  id   Int    @id @default(autoincrement())
+  id   String @id
   name String
 
   devices Device[]
@@ -24,12 +24,12 @@ model Board {
 // device in HomeAssistant
 model Device {
   // board - relation = device
-  board   Board @relation(fields: [boardId], references: [id])
-  boardId Int
+  board   Board?  @relation(fields: [boardId], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  boardId String?
 
   id               Int     @id @default(autoincrement())
   name             String
-  enableUpdate     Boolean
+  enableUpdate     Boolean @default(true)
   blocklyJS        String?
   blocklyWorkspace String?
 
@@ -38,8 +38,8 @@ model Device {
 }
 
 model IrCode {
-  device   Device @relation(fields: [deviceId], references: [id])
-  deviceId Int
+  device   Device? @relation(fields: [deviceId], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  deviceId Int?
 
   id          Int     @id @default(autoincrement())
   name        String
@@ -50,10 +50,10 @@ model IrCode {
 // entity in HomeAssistant
 model Entity {
   // device - relation = entity
-  device   Device @relation(fields: [deviceId], references: [id])
-  deviceId Int
+  device   Device? @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  deviceId Int?
 
-  id   Int     @id
+  id   Int     @id @default(autoincrement())
   name String
   icon String?
 
@@ -66,35 +66,35 @@ model Entity {
 }
 
 model Switch {
-  entity   Entity @relation(fields: [entityId], references: [id])
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
   entityId Int    @id
 
   state Boolean
 }
 
 model Select {
-  entity   Entity @relation(fields: [entityId], references: [id])
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
   entityId Int    @id
 
   // !!primitive type can't be array!!
   options String
-  state   String
+  state   String?
 }
 
 model Button {
-  entity   Entity @relation(fields: [entityId], references: [id])
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
   entityId Int    @id
 }
 
 model Number {
-  entity   Entity @relation(fields: [entityId], references: [id])
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
   entityId Int    @id
 
   state    Float
-  max      Float
-  min      Float
-  step     Float
-  isSlider Boolean
+  max      Float    @default(100)
+  min      Float    @default(1)
+  step     Float    @default(1)
+  isSlider Boolean?
 }
 
 // model ac {}
