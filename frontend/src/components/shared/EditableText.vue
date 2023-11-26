@@ -16,7 +16,7 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
     'editing',
     'adaptiveWidth',
   ]);
-  const emits = defineEmits([
+  const emit = defineEmits([
     'finish', // finish(bool edited, string content)
   ])
 
@@ -54,8 +54,8 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
       class="editable-text-input"
       ref="textInput"
       v-model="myText"
-      @keyup.enter="$emit('finish', true, myText)"
-      @blur="$emit('finish', true, myText)" 
+      @keyup.enter="textInput.blur()"
+      @blur="$emit('finish', true, myText)"
       @keyup.esc="$emit('finish', false, '')"
     >
   </div>
