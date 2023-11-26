@@ -2,127 +2,96 @@
   import PairedBoards from './OverviewBoards/PairedBoards.vue';
   import AvailableBoards from './OverviewBoards/AvailableBoards.vue';
   import { onMounted, ref } from 'vue';
+  import { globals } from '../../main';
+  import axios from 'axios';
 
   const pairedBoards = ref([]);
   const availableBoards = ref([]);
 
-  function fetchPairedBoards() {
+  async function fetchPairedBoards() {
     /**
-     * TODO: api call to fetch the paired boards
+     * * GET /api/boards
      */
-    pairedBoards.value = [
-      {
-        id: '123456789ABC',
-        name: 'Bedroom',
-        online: true,
-      },
-      {
-        id: '23456789ABCD',
-        name: 'Living room',
-        online: false,
-      },
-      {
-        id: '3456789ABCDE',
-        name: 'Bathroom',
-        online: true,
-      },
-      {
-        id: '456789ABCDEF',
-        name: 'Bedroom',
-        online: true,
-      },
-      {
-        id: '56789ABCDEF1',
-        name: 'Living room',
-        online: true,
-      },
-      {
-        id: '6789ABCDEF12',
-        name: 'Bathroom',
-        online: true,
-      },
-      {
-        id: '789ABCDEF123',
-        name: 'Bedroom',
-        online: true,
-      },
-      {
-        id: '89ABCDEF1234',
-        name: 'Living room',
-        online: true,
-      },
-      {
-        id: '9ABCDEF12345',
-        name: 'Bathroom',
-        online: true,
-      },
-    ];
+
+    try {
+      let result = await axios.get(`${globals.$origin}/api/boards`);
+      pairedBoards.value = result.data;
+    } catch(err){
+      console.error(err);
+    }
   }
 
-  function fetchAvailableBoards() {
+  async function fetchAvailableBoards() {
     /**
-     * TODO: api call to fetch the available boards
+     * * GET /api/boards/discover
      */
-    availableBoards.value = [
-      {
-        id: '123456789ABC'
-      },
-      {
-        id: '23456789ABCD'
-      },
-      {
-        id: '3456789ABCDE'
-      },
-      {
-        id: '456789ABCDEF'
-      },
-      {
-        id: '56789ABCDEF1'
-      },
-      {
-        id: '6789ABCDEF12'
-      },
-      {
-        id: '789ABCDEF123'
-      },
-      {
-        id: '89ABCDEF1234'
-      },
-      {
-        id: '9ABCDEF12345'
-      }
-    ];
+
+    try {
+      const result = await axios.get(`${globals.$origin}/api/boards/discover`);
+      let resultAvailable = result.data.filter((board) => board.isAvailable);
+      
+      pairedBoards.value.forEach((paired) => {
+        resultAvailable = resultAvailable.filter((available) => available.id != paired.id);
+      });
+      availableBoards.value = resultAvailable;
+
+    } catch(err){
+      console.error(err);
+    }
   }
 
-  function handlePair(id) {
-    console.log('pairing', id);
+  async function handlePair(id) {
     /**
-     * TODO: api call to pair the board
+     * * POST /api/boards
      */
-    fetchPairedBoards();
-    fetchAvailableBoards();
+
+    try {
+      await axios.post(`${globals.$origin}/api/boards`, {
+        id,
+        name: 'New Board',
+      });
+    } catch(err){
+      console.error(err);
+    }
+
+    await fetchPairedBoards();
+    await fetchAvailableBoards();
   }
 
-  function handleRename(id, name) {
-    console.log('renaming', id, 'to', name);
+  async function handleRename(id, name) {
     /**
-     * TODO: api call to rename the board
+     * * PUT /api/boards/{boardId}
      */
+
+    try {
+      await axios.put(`${globals.$origin}/api/boards/${id}`, {
+        name,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
     fetchPairedBoards();
   }
 
-  function handleUnpair(id) {
-    console.log('unpairing', id);
+  async function handleUnpair(id) {
     /**
-     * TODO: api call to unpair the board
+     * * DELETE /api/boards/{boardId}
      */
-    fetchPairedBoards();
-    fetchAvailableBoards();
+
+    try {
+      await axios.delete(`${globals.$origin}/api/boards/${id}`);
+    } catch (err) {
+      console.error(err);
+    }
+
+    await fetchPairedBoards();
+    await fetchAvailableBoards();
   }
 
-  onMounted(() => {
-    fetchPairedBoards();
-    fetchAvailableBoards();
+  onMounted(async () => {
+    await fetchPairedBoards();
+    await fetchAvailableBoards();
   });
 
 </script>

@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 const middleware = require('./api/middleware');
+const cors = require('cors');
 
 const router = express.Router();
 const apiRouter = require('./api/router');
@@ -15,6 +16,14 @@ require('dotenv').config({path: '../.env'});
 app.use(express.json());
 // 
 app.use(middleware.dev.showReqInfo({method: true, path: true}));
+
+// configure CORS
+if (process.env.NODE_ENV != 'production') {
+    const corsConfig = {
+        origin: 'http://localhost:5173',
+    };
+    app.use(cors(corsConfig));
+}
 
 // `/api` prefix
 app.use('/api', router);

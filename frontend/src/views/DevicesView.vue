@@ -3,180 +3,42 @@
   import DeviceEntities from '../components/device/DeviceEntities.vue';
   import DeviceBlocklyCode from '../components/device/DeviceBlocklyCode.vue';
   import DeviceIRCodes from '../components/device/DeviceIRCodes.vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import { ref, onMounted } from 'vue';
+  import { globals } from '../main';
+  import axios from 'axios';
 
   const route = useRoute();
+  const router = useRouter();
   const currentId = route.params.id;
 
-  const device = ref([]);
+  const device = ref({});
   const boardList = ref([]);
 
-  function fetchaDevice(id){
-    device.value = {
-      id: 1,
-      boardId: '123456789ABC',
-      name: "Example device",
-      enableUpdate: true,
-      blocklyWorkspace: "...",
-      blocklyJS: "...",
-      entities:[
-        {
-          id: 1,
-          deviceId: 1,
-          name: "A Switch",
-          icon: "mdi:unicorn",
-          type: "switch",
-          subtype: {
-            entityId: 1,
-            state: true,
-          }
-        },
-        {
-          id: 2,
-          deviceId: 1,
-          name: "A Number",
-          icon: "mdi:unicorn",
-          type: "number",
-          subtype: {
-            entityId: 1,
-            max: 100,
-            min: 1,
-            step: 1,
-            isSlider: true,
-            state: 69,
-          }
-        },
-        {
-          id: 3,
-          deviceId: 1,
-          name: "A Select",
-          icon: "mdi:unicorn",
-          type: "select",
-          subtype: {
-            entityId: 1,
-            options: [
-              'option1',
-              'option2',
-              'option3',
-            ],
-            state: 'option1',
-          }
-        },
-        {
-          id: 4,
-          deviceId: 1,
-          name: "A Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 5,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 6,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 7,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 8,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-      ],
-      irCodes: [
-        {
-          id: 1,
-          deviceId: 1,
-          name: "Example 1 IR code name",
-          description: "Example IR code description",
-          rawData: [
-            123,
-            200,
-            600,
-            111,
-            420,
-            69
-          ]
-        },
-        {
-          id: 2,
-          deviceId: 1,
-          name: "Example 2 IR code name",
-          description: "Example 2 IR code description",
-          rawData: [
-            222,
-            222,
-            600,
-            111,
-            420,
-            69
-          ]
-        },
-      ]
+  async function fetchDevice(){
+    /**
+     * * GET /api/devices/{deviceId}
+     */
+
+    try {
+      const result = await axios.get(`${globals.$origin}/api/devices/${currentId}`);
+      device.value = result.data;
+    } catch(err) {
+      console.error(err);
     }
   }
 
   async function fetchBoardList() {
     /**
-     * TODO api call here
+     * * GET /api/boards
      */
-    boardList.value = [
-      {
-        id: '123456789ABC',
-        name: 'A ESP board',
-      },
-      {
-        id: '23456789ABCD',
-        name: 'Living room',
-      },
-      {
-        id: '3456789ABCDE',
-        name: 'Bathroom',
-      },
-      {
-        id: '456789ABCDEF',
-        name: 'Bedroom',
-      },
-      {
-        id: '56789ABCDEF1',
-        name: 'Basement',
-      },
-      {
-        id: '6789ABCDEF12',
-        name: 'Kitchen',
-      },
-    ];
+
+    try {
+      let result = await axios.get(`${globals.$origin}/api/boards`);
+      boardList.value = result.data;
+    } catch(err){
+      console.error(err);
+    }
   }
 
   function handleIRCodeRename(id, name) {
@@ -184,7 +46,7 @@
     /**
      * TODO: api call to update irCode
      */
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleIRCodeRedescribe(id, description) {
@@ -192,7 +54,7 @@
     /**
      * TODO: api call to update irCode
      */
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleIRCodeDelete(id) {
@@ -200,7 +62,7 @@
     /**
      * TODO: api call to update irCode
      */
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleSavingIRCode( boardId, receiveRawdata, IRCodeId, deviceId) {
@@ -208,60 +70,77 @@
     /**
      * TODO: api call to unpair the board
      */
-    fetchaDevice();
+    fetchDevice();
   }
 
-  function handleUpdateDeviceInfo(device) {
+  async function handleUpdateDeviceInfo(device) {
     console.log('updating device with body', device);
     /**
      * TODO api call to update device
+     * * PUT /api/devices/{deviceId}
      */
-    fetchaDevice();
+
+    try {
+      await axios.put(`${globals.$origin}/api/devices/${currentId}`, device);
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleDeleteDevice() {
+  async function handleDeleteDevice() {
     console.log('deleting device');
     /**
      * TODO api call to delete device
+     * * DELETE /api/devices/{deviceId}
      */
+
+    try {
+      await axios.delete(`${globals.$origin}/api/devices/${currentId}`, device);
+      router.push({ path: '/overview', replace: true });
+    } catch(err) {
+      console.error(err);
+    }
+
   }
 
   function handleRenameEntity(id, name) {
     console.log('renaming entity', id, name);
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleDeleteEntity(id) {
     console.log('deleting entity', id);
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleNewNumber(entityname, options) {
     console.log('new number', entityname, options);
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleNewSelect(entityname, options) {
     console.log('new select', entityname, options);
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleNewButton(entityname) {
     console.log('new button', entityname);
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleNewSwitch(entityname) {
     console.log('new switch', entityname);
-    fetchaDevice();
+    fetchDevice();
   }
 
   function handleAddingIRCode() {
-    fetchaDevice();
+    fetchDevice();
   }
 
   onMounted(() => {
-    fetchaDevice(currentId);
+    fetchDevice();
     fetchBoardList();
   });
 

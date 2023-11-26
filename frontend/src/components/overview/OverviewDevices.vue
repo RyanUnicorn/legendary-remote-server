@@ -3,80 +3,105 @@
   import OverviewDevicesAddingCard from './OverviewDevices/OverviewDevicesAddingCard.vue';
   import OverviewDevicesInfoCard from './OverviewDevices/OverviewDevicesInfoCard.vue';
   import { onMounted, ref } from 'vue';
+  import { globals } from '../../main';
+  import axios from 'axios';
 
   const router = useRouter();
 
   const devices = ref([]);
 
-  function fetchDevices(){
-    devices.value = [
-      {
-        id: 1,
-        name: "Item 1",
-        enableUpdate: true,
-        entityCount: 3
-      },
-      {
-        id: 2,
-        name: "Item 2",
-        enableUpdate: false,
-        entityCount: 6
-      },
-      {
-        id: 3,
-        name: "Item 3",
-        enableUpdate: true,
-        entityCount: 3
-      },
-      {
-        id: 4,
-        name: "Item 4",
-        enableUpdate: true,
-        entityCount: 1
-      },
-      {
-        id: 5,
-        name: "Item 5",
-        enableUpdate: false,
-        entityCount: 3
-      },
-      {
-        id: 6,
-        name: "Item 6",
-        enableUpdate: false,
-        entityCount: 3
-      },
-      {
-        id: 7,
-        name: "Item 7",
-        enableUpdate: true,
-        entityCount: 7
-      },
-      {
-        id: 8,
-        name: "Item 8",
-        enableUpdate: true,
-        entityCount: 8
-      },
-      {
-        id: 9,
-        name: "Item 9",
-        enableUpdate: true,
-        entityCount: 9
-      },
-      {
-        id: 10,
-        name: "Item 10",
-        enableUpdate: false,
-        entityCount: 30
-      },
-    ]
+  async function fetchDevices(){
+    /**
+     * TODO api call to get devices
+     * * GET /api/devices
+     */
+
+    try {
+      const result = await axios.get(`${globals.$origin}/api/devices`);
+      devices.value = result.data;
+    } catch(err) {
+      console.error(err);
+    }
+
+
+    // devices.value = [
+    //   {
+    //     id: 1,
+    //     name: "Item 1",
+    //     enableUpdate: true,
+    //     entityCount: 3
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "Item 2",
+    //     enableUpdate: false,
+    //     entityCount: 6
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "Item 3",
+    //     enableUpdate: true,
+    //     entityCount: 3
+    //   },
+    //   {
+    //     id: 4,
+    //     name: "Item 4",
+    //     enableUpdate: true,
+    //     entityCount: 1
+    //   },
+    //   {
+    //     id: 5,
+    //     name: "Item 5",
+    //     enableUpdate: false,
+    //     entityCount: 3
+    //   },
+    //   {
+    //     id: 6,
+    //     name: "Item 6",
+    //     enableUpdate: false,
+    //     entityCount: 3
+    //   },
+    //   {
+    //     id: 7,
+    //     name: "Item 7",
+    //     enableUpdate: true,
+    //     entityCount: 7
+    //   },
+    //   {
+    //     id: 8,
+    //     name: "Item 8",
+    //     enableUpdate: true,
+    //     entityCount: 8
+    //   },
+    //   {
+    //     id: 9,
+    //     name: "Item 9",
+    //     enableUpdate: true,
+    //     entityCount: 9
+    //   },
+    //   {
+    //     id: 10,
+    //     name: "Item 10",
+    //     enableUpdate: false,
+    //     entityCount: 30
+    //   },
+    // ]
   }
 
-  function addDevice(){
-    console.log("Create device.");
-    //api create_Device("My Device")
-    router.push('/devices/'+'1');
+  async function addDevice(){
+    /**
+     * TODO api call to add new device
+     * * POST /api/devices
+     */
+    
+    try {
+      const result = await axios.post(`${globals.$origin}/api/devices`, {
+        name: 'New Device',
+      })
+      router.push(`/devices/${result.data.id}`);
+    } catch(err) {
+      console.error(err);
+    }
   }
 
   onMounted(() => {

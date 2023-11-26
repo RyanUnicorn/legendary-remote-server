@@ -55,7 +55,7 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
       ref="textInput"
       v-model="myText"
       @keyup.enter="$emit('finish', true, myText)"
-      @blur="$emit('finish', false, '')" 
+      @blur="$emit('finish', true, myText)" 
       @keyup.esc="$emit('finish', false, '')"
     >
   </div>
