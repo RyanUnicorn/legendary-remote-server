@@ -9,7 +9,7 @@ module.exports = {
         let _devices = await prisma.device.findMany({
             include: {
                 entities: { include: ENTITY_TYPES },
-                irCodes:true,
+                irCodes: true,
             },
         });
 
@@ -48,6 +48,10 @@ module.exports = {
     getDevice: async ({id: _id}) => {
         const _device = await prisma.device.findUnique({
             where: {id: _id},
+            include: {
+                entities: { include: ENTITY_TYPES },
+                irCodes: true,
+            },
         });
 
         return _device;
