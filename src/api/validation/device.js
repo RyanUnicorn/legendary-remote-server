@@ -11,7 +11,7 @@ module.exports = {
             boardId: string().min(12),
             id: number().positive().integer(),
             name: string(),
-            enableUpdate: boolean().default(true),
+            enableUpdate: boolean(),
             blocklyJS: string().nullable(),
             blocklyWorkspace: string().nullable(),
         }),

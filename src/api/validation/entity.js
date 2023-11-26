@@ -23,7 +23,7 @@ const subtype = {
         max: number().optional(),
         min: number().optional(),
         step: number().min(0.001).optional(),
-        isSlider: boolean().default(true),
+        isSlider: boolean(),
     }),
 }
 
