@@ -105,33 +105,123 @@
 
   }
 
-  function handleRenameEntity(id, name) {
+  async function handleRenameEntity(id, name) {
     console.log('renaming entity', id, name);
+    /**
+     * TODO apicall to rename an entity
+     * * PUT /api/entities/{entityId}
+     */
+
+    try {
+      await axios.put(`${globals.$origin}/api/entities/${id}`, {
+        name,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
   }
 
-  function handleDeleteEntity(id) {
+  async function handleDeleteEntity(id) {
     console.log('deleting entity', id);
+    /**
+     * TODO apicall to delete entity
+     */
+    try {
+      await axios.delete(`${globals.$origin}/api/entities/${id}`);
+    } catch(err) {
+      console.error(err);
+    }
     fetchDevice();
   }
 
-  function handleNewNumber(entityname, options) {
-    console.log('new number', entityname, options);
+  async function handleNewNumber(entityName, options) {
+    console.log('new number', entityName, options);
+    /**
+     * TODO apicall to add a new number entity
+     */
+    
+     try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'number',
+        number: {
+          ...options,
+          state: options.min, // defaults to the min number
+        },
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
   }
 
-  function handleNewSelect(entityname, options) {
-    console.log('new select', entityname, options);
+  async function handleNewSelect(entityName, options) {
+    console.log('new select', entityName, options);
+    /**
+     * TODO apicall to add a new select entity
+     */
+    
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'select',
+        select: {
+          ...options,
+          state: options.options[0], // defaults to the first option
+        },
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
   }
 
-  function handleNewButton(entityname) {
-    console.log('new button', entityname);
+  async function handleNewButton(entityName) {
+    console.log('new button', entityName);
+    /**
+     * TODO apicall to add a new button entity
+     */
+
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'button',
+        button: {},
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
   }
 
-  function handleNewSwitch(entityname) {
-    console.log('new switch', entityname);
+  async function handleNewSwitch(entityName) {
+    console.log('new switch', entityName);
+    /**
+     * TODO apicall to add a new switch entity
+     * * POST /api/entities
+     */
+
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'switch',
+        switch: {
+          state: false, // default false
+        },
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
   }
 
