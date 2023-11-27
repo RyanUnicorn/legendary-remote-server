@@ -1,6 +1,6 @@
 const { Prisma } = require('@prisma/client');
 const { board: model } = require('../model');
-const { board: mqtt } = require('../mqtt');
+const { board: mqtt } = require('../../mqtt');
 
 module.exports = {
     listBoards: async () => {

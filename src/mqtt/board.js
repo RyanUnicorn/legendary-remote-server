@@ -1,7 +1,7 @@
 const { client, ...mqtt } = require('./client');
 const { WebSocket } = require('ws');
 
-const wss = require('../ws');
+const wss = require('../api/ws');
 
 /**
  * `element = {id, lastSeen, isAvailable}`

@@ -23,7 +23,7 @@ let topicsSub = {};
 const route = async (topicToSub, callback, regexp) => {
     topicsSub[topicToSub] = { 
         callback: callback,
-        regexp: regexp ? regexp : new RegExp(topicToSub), 
+        regexp: regexp ? regexp : new RegExp(`^${topicToSub}$`), 
     };
 
     // subscribe the topic

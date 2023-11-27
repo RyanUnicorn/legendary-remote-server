@@ -33,11 +33,16 @@ module.exports = {
     sendRaw: async ({boardId, irCode}) => new Promise((resolve, reject) => {
         const payload = JSON.stringify(irCode);
         client.publish(`${IR_PREFIX}/${boardId}/${IR_SENDRAW}`, payload);
+
+        setTimeout(() => {
+            mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
+            reject(new Error(''));
+        }, client.BOARD_INTERVAL);
+
         mqtt.route(`${IR_PREFIX}/${boardId}/${IR_SENT}`, (topic, message) => {
             message = JSON.parse(message.toString());
             if (message.code == irCode.code) {
                 mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
-
                 resolve(message);
             }
         });

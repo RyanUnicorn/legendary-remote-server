@@ -11,6 +11,19 @@ const ENTITY_TYPES = {
 module.exports = {
     // constant of entity types
     ENTITY_TYPES,
+
+    /**
+     * List all entities.
+     * @returns [`entity`, ...]
+     */
+    listEntities: async () => {
+        let includeTables = ENTITY_TYPES;
+        includeTables.device = true;
+        
+        return await prisma.entity.findMany({
+            include: includeTables,
+        });
+    },
     
     /**
      * Create an entity.
@@ -19,7 +32,7 @@ module.exports = {
      */
     createEntity: async (entity) => {
         // the tables that includes in returns.
-        const {...includeTables} = ENTITY_TYPES;
+        let includeTables = ENTITY_TYPES;
         includeTables.device = true;
         
         // using prisma's `create` API
@@ -38,7 +51,7 @@ module.exports = {
      */
     updateEntity: async (entity) => {
         // the tables that includes in returns.
-        const {...includeTables} = ENTITY_TYPES;
+        let includeTables = ENTITY_TYPES;
         includeTables.device = true;
 
         // using prisma's `update` API

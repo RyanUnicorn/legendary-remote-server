@@ -1,5 +1,5 @@
 const { entity: model } = require('../model');
-const { homeAssistant } = require('../mqtt');        
+const { homeAssistant } = require('../../mqtt');
 
 module.exports = {
     /**
@@ -9,10 +9,9 @@ module.exports = {
      * @returns `entity` that created
      */
     createEntity: async (entity) => {
-        // console.log(entity);
         const _entity = await model.createEntity(entity);
 
-        homeAssistant.publishEntity(_entity);
+        homeAssistant.configHAEntity(_entity);
 
         return _entity;
     },
@@ -26,7 +25,7 @@ module.exports = {
     updateEntity: async (entity) => {
         const _entity = await model.updateEntity(entity);
 
-        homeAssistant.publishEntity(_entity);
+        homeAssistant.configHAEntity(_entity);
 
         return _entity;
     },

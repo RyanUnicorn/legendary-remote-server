@@ -1,4 +1,4 @@
-const { irCode: mqtt } = require('../mqtt');
+const { irCode: mqtt } = require('../../mqtt');
 const { irCode: model } = require('../model');
 
 module.exports = {
