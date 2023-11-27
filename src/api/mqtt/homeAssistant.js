@@ -44,7 +44,7 @@ function entity2DiscoveryPayload(entity) {
     // output entity
     let _entity = {
         name: _.name,
-        icon: _.icon ? _.icon : 'mdi:',
+        icon: _.icon ? _.icon : undefined,
         unique_id: _.id,
         command_topic: `${DEVICE_PREFIX}/${_.device.boardId}/${_.id}/cmnd`,
         state_topic: `${DEVICE_PREFIX}/${_.device.boardId}/${_.id}/state`,
@@ -167,7 +167,7 @@ module.exports = {
         console.log(payload);
         // default state available=true
         setTimeout(() => {
-            client.publish(payload.state_topic, 'true');
+            client.publish(payload.availability.topic, 'true');
         }, 500);
     },
 

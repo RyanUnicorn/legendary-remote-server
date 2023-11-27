@@ -576,6 +576,9 @@ components:
         description:
           type: string
           example: Example IR code description
+        code:
+          type: string
+          example: "0x7DF774D3"
         rawData:
           type: array
           items:
