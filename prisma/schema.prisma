@@ -34,17 +34,6 @@ model Device {
   blocklyWorkspace String?
 
   entities Entity[]
-  irCodes  IrCode[]
-}
-
-model IrCode {
-  device   Device? @relation(fields: [deviceId], references: [id], onUpdate: SetNull, onDelete: Cascade)
-  deviceId Int?
-
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String?
-  rawData     String
 }
 
 // entity in HomeAssistant
@@ -57,12 +46,26 @@ model Entity {
   name String
   icon String?
 
+  irCodes IrCode[]
+
   type   String // one of the subtypes: switch, select, button, number
   // subtypes
   switch Switch?
   select Select?
   button Button?
   number Number?
+}
+
+model IrCode {
+  // entity - relation = irCode
+  entity   Entity? @relation(fields: [entityId], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  entityId Int?
+
+  id          Int     @id @default(autoincrement())
+  topicSufix  String  @default("")
+  name        String
+  description String?
+  rawData     String
 }
 
 model Switch {

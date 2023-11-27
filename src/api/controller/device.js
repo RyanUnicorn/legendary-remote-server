@@ -15,7 +15,6 @@ module.exports = {
     // middleware: validate board data
     createDevice: [validate(device.schema, MODE.BODY), async (req, res) => {
         try {
-            console.log(req.body);
             const device = await service.createDevice(req.body);
             res.status(200).send(device);
         } catch (err) {
