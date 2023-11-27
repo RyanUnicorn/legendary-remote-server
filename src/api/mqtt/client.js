@@ -8,17 +8,23 @@ client.BOARD_INTERVAL = 1000;
 // 500ms is a redundant delay
 client.BOARD_TIMEOUT = client.BOARD_INTERVAL + 500;
 
-// {`topic`: `callback`, ...}
+// {`topic`: {`regexp`, `callback`}, ...}
 let topicsSub = {};
 
 /**
- * 
+ * Add a topic to subscribe
  * @param {*} topicToSub topic to subscribe
  * @param {*} callback callback
+ * @param {*} regexp regular expression to compare
+ * to the topic, leave this blank to set regexp to
+ * the exact same as topicToSub.
  * function (topic, message)
  */
-route = async (topicToSub, callback) => {
-    topicsSub[topicToSub] = callback;
+const route = async (topicToSub, callback, regexp) => {
+    topicsSub[topicToSub] = { 
+        callback: callback,
+        regexp: regexp ? regexp : new RegExp(topicToSub), 
+    };
 
     // subscribe the topic
     await client.subscribeAsync(topicToSub)
@@ -30,7 +36,10 @@ route = async (topicToSub, callback) => {
     }
 };
 
-unroute = async (topicToUnsub) => {
+/**
+ * Unsynscribe a MQTT topic.
+ */
+const unroute = async (topicToUnsub) => {
     delete topicsSub[topicToUnsub];
 
     // subscribe the topic
@@ -53,10 +62,9 @@ client.on('connect', () => {
          * call it's callback.
          */
         Object.keys(topicsSub).forEach(_topic => {
-            // TODO: implement `#` wildcare.
-            // ? May implement with regexp?
-            if (topic.startsWith(_topic)) {
-                topicsSub[_topic](topic, message);
+            // if matches the expression, call it's callback.
+            if (topic.match(topicsSub[_topic].regexp)) {
+                topicsSub[_topic].callback(topic, message);
             }
         });
     });

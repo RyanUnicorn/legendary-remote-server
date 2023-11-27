@@ -6,12 +6,11 @@ module.exports = {
      * List all the devices.
      */
     listDevices: async () => {
-        let includes = {irCodes: true};
-        Object.assign(includes, ENTITY_TYPES);
 
         let _devices = await prisma.device.findMany({
             include: {
-                entities: { include: includes },
+                entities: { include: ENTITY_TYPES },
+                irCodes: true,
             },
         });
 
@@ -48,14 +47,12 @@ module.exports = {
      * @param {*} `_id` deviceId
      */
     getDevice: async ({id: _id}) => {
-        let includes = {irCodes: true};
-        Object.assign(includes, ENTITY_TYPES);
 
         const _device = await prisma.device.findUnique({
             where: {id: _id},
             include: {
-                entities: { include: includes },
-                // irCodes: true,
+                entities: { include: ENTITY_TYPES },
+                irCodes: true,
             },
         });
 
