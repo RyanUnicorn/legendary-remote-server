@@ -75,12 +75,10 @@ function discoveryPayload(entity) {
     switch (_.type) {
         case 'switch':
             additionalKeys = {
-                payload_on: JSON.stringify({
-                    state: 'on',
-                }),
-                payload_off: JSON.stringify({
-                    state: 'off',
-                }),
+                payload_on: 'on',
+                payload_off: 'off',
+                state_on: 'true',
+                state_off: 'false',
             };
 
             break;
@@ -167,8 +165,12 @@ const publishEntity = (entity) => {
  */
 const configHAEntity = (entity) => {
     publishEntity(entity);
-
     // TODO: should support FAN, HVAC...
+    
+    // Publish entity's state.
+    const state = JSON.stringify(entity[entity.type].state);
+    client.publish(TOPIC.state(entity), state, { retain: true });
+
     const cmndTopic = TOPIC.command(entity);
     routeCmndTopic(cmndTopic);
 };
@@ -199,6 +201,7 @@ module.exports = {
         const topic = dicoveryTopic(entity);
 
         // TODO: should support FAN, HVAC...
+        client.publish(TOPIC.state(entity), entity.state, { retain: false });
         mqtt.unroute(topic);
         client.publish(topic, '');
     }
