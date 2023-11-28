@@ -27,7 +27,7 @@ const isFocused = ref(false);
 const handleBlur = () => {
   setTimeout(() => {
     isFocused.value = false
-  }, 50);
+  }, 100);
 };
 
 </script>
