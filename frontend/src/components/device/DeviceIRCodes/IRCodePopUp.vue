@@ -1,6 +1,7 @@
 <script setup>
-
-  import { onMounted, ref } from 'vue';
+  import axios from 'axios';
+  import { globals } from '../../../main';
+  import { ref } from 'vue';
 
   const props = defineProps([
     'isModalOpen',
@@ -15,43 +16,59 @@
       showRecordButton.value = true;
       isReceive.value = false;
       receiveRawdata.value = [];
+      receiveCode.value = '';
       emit('close');
     }
   };
   
   const emit = defineEmits([
     'close',
-    'saveIRCode'
+    'saveIRCode',
   ])
 
   const receiveRawdata = ref([]);
+  const receiveCode = ref([]);
   const showRecordButton = ref(true);
   const isReceive = ref(false);
 
-  function recordRawdata(){
+  async function recordRawdata(){
     showRecordButton.value = !showRecordButton.value;
 
     //api record fuc(boardId)
-
-    setTimeout(() => {
-      receiveRawdata.value = [123];
-      if(receiveRawdata.value.length>0)isReceive.value = !isReceive.value;
-      console.log("Receive raw-data " + receiveRawdata.value);
-      showRecordButton.value = !showRecordButton.value;
-    }, 3000);
+    try {
+      const result = await axios.get(`${globals.$origin}/api/ircodes/record/${props.boardId}`);
+      receiveCode.value = result.data.code;
+      receiveRawdata.value = result.data.rawData;
+      isReceive.value = !isReceive.value;
+      console.log(result.status);
+      console.log(receiveCode.value);
+      console.log(receiveRawdata.value);
+    } catch(err) {
+      console.error(err);
+    }
+    showRecordButton.value = !showRecordButton.value;
   }
 
-  function replayRawdata(){
-    console.log("Send raw data " + receiveRawdata.value + (" as board ") + props.boardId);
+  async function replayRawdata(){
     //api send receiveRawdata
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/send`, {
+        code: receiveCode.value,
+        rawData: receiveRawdata.value,
+        boardId:props.boardId,
+      });
+    } catch(err) {
+      console.error(err);
+    }
   }
 
   function saveIRCode(){
     //api Update IRCode with receiveRawdata
-    emit('saveIRCode', props.boardId, receiveRawdata.value);
+    emit('saveIRCode', props.boardId, receiveRawdata.value, receiveCode.value);
     showRecordButton.value = true;
     isReceive.value = false;
     receiveRawdata.value = [];
+    receiveCode.value = '';
     emit('close');
   }
 

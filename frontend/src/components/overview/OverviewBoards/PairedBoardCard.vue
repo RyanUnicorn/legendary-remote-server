@@ -46,8 +46,8 @@
       @finish="handleEdit"
     />
     <h1>{{ boardData?.id.match(/.{1,2}/g).join(':') }}</h1>
-    <p :class="{offline: !boardData?.online}">
-      {{ boardData?.online? 'Online' : 'Offline' }}
+    <p :class="{offline: !boardData?.isAvailable}">
+      {{ boardData?.isAvailable? 'Online' : 'Offline' }}
     </p>
    </div>
 </template>

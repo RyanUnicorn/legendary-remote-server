@@ -407,7 +407,7 @@ paths:
         '404':
           description: Board not found
 
-  /ircodes/record:
+  /ircodes/record/{boardId}:
     get:
       tags:
         - "ircodes"
@@ -527,6 +527,9 @@ components:
           enableUpdate:
             type: boolean
             example: true
+          entityCount:
+            type: integer
+            example: 2
 
     device:
       type: object
@@ -573,6 +576,9 @@ components:
         description:
           type: string
           example: Example IR code description
+        code:
+          type: string
+          example: "0x7DF774D3"
         rawData:
           type: array
           items:

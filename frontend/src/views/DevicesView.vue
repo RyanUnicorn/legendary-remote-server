@@ -3,265 +3,272 @@
   import DeviceEntities from '../components/device/DeviceEntities.vue';
   import DeviceBlocklyCode from '../components/device/DeviceBlocklyCode.vue';
   import DeviceIRCodes from '../components/device/DeviceIRCodes.vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import { ref, onMounted } from 'vue';
+  import { globals } from '../main';
+  import axios from 'axios';
 
   const route = useRoute();
+  const router = useRouter();
   const currentId = route.params.id;
 
-  const device = ref([]);
+  const device = ref({});
   const boardList = ref([]);
 
-  function fetchaDevice(id){
-    device.value = {
-      id: 1,
-      boardId: '123456789ABC',
-      name: "Example device",
-      enableUpdate: true,
-      blocklyWorkspace: "...",
-      blocklyJS: "...",
-      entities:[
-        {
-          id: 1,
-          deviceId: 1,
-          name: "A Switch",
-          icon: "mdi:unicorn",
-          type: "switch",
-          subtype: {
-            entityId: 1,
-            state: true,
-          }
-        },
-        {
-          id: 2,
-          deviceId: 1,
-          name: "A Number",
-          icon: "mdi:unicorn",
-          type: "number",
-          subtype: {
-            entityId: 1,
-            max: 100,
-            min: 1,
-            step: 1,
-            isSlider: true,
-            state: 69,
-          }
-        },
-        {
-          id: 3,
-          deviceId: 1,
-          name: "A Select",
-          icon: "mdi:unicorn",
-          type: "select",
-          subtype: {
-            entityId: 1,
-            options: [
-              'option1',
-              'option2',
-              'option3',
-            ],
-            state: 'option1',
-          }
-        },
-        {
-          id: 4,
-          deviceId: 1,
-          name: "A Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 5,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 6,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 7,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-        {
-          id: 8,
-          deviceId: 1,
-          name: "Filler Button",
-          icon: "mdi:unicorn",
-          type: "button",
-          subtype: {
-            entityId: 1,
-          }
-        },
-      ],
-      irCodes: [
-        {
-          id: 1,
-          deviceId: 1,
-          name: "Example 1 IR code name",
-          description: "Example IR code description",
-          rawData: [
-            123,
-            200,
-            600,
-            111,
-            420,
-            69
-          ]
-        },
-        {
-          id: 2,
-          deviceId: 1,
-          name: "Example 2 IR code name",
-          description: "Example 2 IR code description",
-          rawData: [
-            222,
-            222,
-            600,
-            111,
-            420,
-            69
-          ]
-        },
-      ]
+  async function fetchDevice(){
+    /**
+     * * GET /api/devices/{deviceId}
+     */
+
+    try {
+      const result = await axios.get(`${globals.$origin}/api/devices/${currentId}`);
+      device.value = result.data;
+    } catch(err) {
+      console.error(err);
     }
   }
 
   async function fetchBoardList() {
     /**
-     * TODO api call here
+     * * GET /api/boards
      */
-    boardList.value = [
-      {
-        id: '123456789ABC',
-        name: 'A ESP board',
-      },
-      {
-        id: '23456789ABCD',
-        name: 'Living room',
-      },
-      {
-        id: '3456789ABCDE',
-        name: 'Bathroom',
-      },
-      {
-        id: '456789ABCDEF',
-        name: 'Bedroom',
-      },
-      {
-        id: '56789ABCDEF1',
-        name: 'Basement',
-      },
-      {
-        id: '6789ABCDEF12',
-        name: 'Kitchen',
-      },
-    ];
+
+    try {
+      let result = await axios.get(`${globals.$origin}/api/boards`);
+      boardList.value = result.data;
+    } catch(err){
+      console.error(err);
+    }
   }
 
-  function handleIRCodeRename(id, name) {
-    console.log('renaming', id, 'to', name);
+  async function handlSavingNewIRCode( boardId, receiveRawdata, receiveCode){
+    
+    try {
+      await axios.post(`${globals.$origin}/api/ircodes`, {
+        deviceId: currentId,
+        name: 'New IRCode',
+        description: 'New Description',
+        code: receiveCode,
+        rawData: receiveRawdata,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+    fetchDevice();
+  }
+
+  async function handleSavingInfoIRCode( boardId, receiveRawdata, receiveCode, IRCodeId, DeviceId) {
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/${IRCodeId}`, {
+        code: receiveCode,
+        rawData: receiveRawdata,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+    fetchDevice();
+  }
+
+  async function handleIRCodeRename(id, name) {
     /**
-     * TODO: api call to update irCode
+     * * PUT /api/ircodes/{ircodesId}
      */
-    fetchaDevice();
+
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/${id}`, {
+        name,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleIRCodeRedescribe(id, description) {
-    console.log('redescribe', id, 'to', description);
+  async function handleIRCodeRedescribe(id, description) {
     /**
-     * TODO: api call to update irCode
+     * * PUT /api/ircodes/{ircodesId}
      */
-    fetchaDevice();
+
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/${id}`, {
+        description,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleIRCodeDelete(id) {
-    console.log('delete', id);
+  async function handleIRCodeDelete(id) {
     /**
-     * TODO: api call to update irCode
+     * * DELETE /api/ircodes/{ircodesId}
      */
-    fetchaDevice();
+    try {
+      await axios.delete(`${globals.$origin}/api/ircodes/${id}`);
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
+
   }
 
-  function handleSavingIRCode( boardId, receiveRawdata, IRCodeId, deviceId) {
-    console.log('Save IRCode', receiveRawdata, "BoardID", boardId, "IRCodeID", IRCodeId, "DeviceID", deviceId);
-    /**
-     * TODO: api call to unpair the board
-     */
-    fetchaDevice();
-  }
-
-  function handleUpdateDeviceInfo(device) {
+  async function handleUpdateDeviceInfo(device) {
     console.log('updating device with body', device);
     /**
      * TODO api call to update device
+     * * PUT /api/devices/{deviceId}
      */
-    fetchaDevice();
+
+    try {
+      await axios.put(`${globals.$origin}/api/devices/${currentId}`, device);
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleDeleteDevice() {
+  async function handleDeleteDevice() {
     console.log('deleting device');
     /**
      * TODO api call to delete device
+     * * DELETE /api/devices/{deviceId}
      */
+
+    try {
+      await axios.delete(`${globals.$origin}/api/devices/${currentId}`, device);
+      router.push({ path: '/overview', replace: true });
+    } catch(err) {
+      console.error(err);
+    }
+
   }
 
-  function handleRenameEntity(id, name) {
+  async function handleRenameEntity(id, name) {
     console.log('renaming entity', id, name);
-    fetchaDevice();
+    /**
+     * TODO apicall to rename an entity
+     * * PUT /api/entities/{entityId}
+     */
+
+    try {
+      await axios.put(`${globals.$origin}/api/entities/${id}`, {
+        name,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleDeleteEntity(id) {
+  async function handleDeleteEntity(id) {
     console.log('deleting entity', id);
-    fetchaDevice();
+    /**
+     * TODO apicall to delete entity
+     */
+    try {
+      await axios.delete(`${globals.$origin}/api/entities/${id}`);
+    } catch(err) {
+      console.error(err);
+    }
+    fetchDevice();
   }
 
-  function handleNewNumber(entityname, options) {
-    console.log('new number', entityname, options);
-    fetchaDevice();
+  async function handleNewNumber(entityName, options) {
+    console.log('new number', entityName, options);
+    /**
+     * TODO apicall to add a new number entity
+     */
+    
+     try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'number',
+        number: {
+          ...options,
+          state: options.min, // defaults to the min number
+        },
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleNewSelect(entityname, options) {
-    console.log('new select', entityname, options);
-    fetchaDevice();
+  async function handleNewSelect(entityName, options) {
+    console.log('new select', entityName, options);
+    /**
+     * TODO apicall to add a new select entity
+     */
+    
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'select',
+        select: {
+          ...options,
+          state: options.options[0], // defaults to the first option
+        },
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleNewButton(entityname) {
-    console.log('new button', entityname);
-    fetchaDevice();
+  async function handleNewButton(entityName) {
+    console.log('new button', entityName);
+    /**
+     * TODO apicall to add a new button entity
+     */
+
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'button',
+        button: {},
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
-  function handleNewSwitch(entityname) {
-    console.log('new switch', entityname);
-    fetchaDevice();
-  }
+  async function handleNewSwitch(entityName) {
+    console.log('new switch', entityName);
+    /**
+     * TODO apicall to add a new switch entity
+     * * POST /api/entities
+     */
 
-  function handleAddingIRCode() {
-    fetchaDevice();
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, {
+        deviceId: currentId,
+        name: entityName,
+        type: 'switch',
+        switch: {
+          state: false, // default false
+        },
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
   }
 
   onMounted(() => {
-    fetchaDevice(currentId);
+    fetchDevice();
     fetchBoardList();
   });
 
@@ -291,12 +298,11 @@
         <DeviceIRCodes
           :IRCodes = "device.irCodes"
           :boardId = "device.boardId"
-          :deviceId="device.id"
           @rename="handleIRCodeRename"
           @redescribe="handleIRCodeRedescribe"
           @delete="handleIRCodeDelete"
-          @saveIRCode="handleSavingIRCode"
-          @addIRCode="handleAddingIRCode"
+          @saveInfoIRCode="handleSavingInfoIRCode"
+          @saveNewIRCode="handlSavingNewIRCode"
         />
     </div>
   </div>

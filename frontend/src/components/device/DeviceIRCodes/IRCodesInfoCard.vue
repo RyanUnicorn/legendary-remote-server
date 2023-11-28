@@ -15,7 +15,7 @@
         'rename',
         'redescribe',
         'delete',
-        'saveIRCode'
+        'saveInfoIRCode'
     ])
 
     const editingName = ref(false);
@@ -58,8 +58,8 @@
         isPopUp.value = !isPopUp.value;
     }
 
-    function saveIRCode(boardId, receiveRawdata){
-        emit('saveIRCode', boardId, receiveRawdata, props.IRCodedata.id, props.IRCodedata.deviceId);
+    function saveInfoIRCode(boardId, receiveRawdata, receiveCode){
+        emit('saveInfoIRCode', boardId, receiveRawdata, receiveCode, props.IRCodedata.id, props.IRCodedata.deviceId);
     }
 
 </script>
@@ -86,8 +86,7 @@
             :isModalOpen = "isPopUp"
             :boardId="props.boardId"
             @close="popUPswitch"
-            @saveIRCode="saveIRCode"
-            class="PopUp"
+            @saveIRCode="saveInfoIRCode"
         />
     </div>
 </template>
@@ -127,7 +126,4 @@
         position: absolute;
     }
 
-    .PopUp{
-
-    }
 </style>
