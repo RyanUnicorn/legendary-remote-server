@@ -7,6 +7,7 @@ const client = mqtt.connect(BROKER_URL);
 client.BOARD_INTERVAL = 1000;
 // 500ms is a redundant delay
 client.BOARD_TIMEOUT = client.BOARD_INTERVAL + 500;
+client.RECV_TIMEOUT = 10000;
 
 // {`topic`: {`regexp`, `callback`}, ...}
 let topicsSub = {};
