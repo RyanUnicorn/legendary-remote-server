@@ -1,33 +1,31 @@
 <script setup>
-  import { RouterLink } from 'vue-router'
   import DeviceIRCodesAddingCard from './DeviceIRCodes/IRCodesAddingCard.vue';
   import DeviceIRCodesInfoCard from './DeviceIRCodes/IRCodesInfoCard.vue';
-  import { onMounted, ref } from 'vue';
+  import { ref } from 'vue';
+  import PopUp from './DeviceIRCodes/IRCodePopUp.vue';
+  
+
+  const isPopUp = ref(false);
+
+  function popUPswitch(){
+    isPopUp.value = !isPopUp.value;
+  }
 
   const props = defineProps([
     'IRCodes',
     'boardId',
-    'deviceId'
   ]);
 
   const emit = defineEmits([
     'rename',
     'redescribe',
     'delete',
-    'saveIRCode',
-    'addIRCode'
+    'saveNewIRCode',
+    'saveInfoIRCode',
   ])
 
   function addingIRCode(){
-    console.log("deviceId", props.deviceId, "Name", "My IRCode", "Description", "My description", "rawDara", [])
-    //api add new IRCode
-    // {
-    //   "deviceId": props.deviceId,
-    //   "name": "My IRCode",
-    //   "description": "My description",
-    //   "rawData": []
-    // }
-    emit('addIRCode');
+    popUPswitch();
   }
 
 </script>
@@ -42,9 +40,15 @@
         @rename = "(id, name) => $emit('rename', id, name)"
         @redescribe = "(id, description) => $emit('redescribe', id, description)"
         @delete = "(id) => $emit('delete', id)"
-        @saveIRCode = "(boardId, receiveRawdata, IRCodeId, deviceId) => $emit('saveIRCode', boardId, receiveRawdata, IRCodeId, deviceId)"
+        @saveInfoIRCode = "(boardId, receiveRawdata, receiveCode, IRCodeId, DeviceId) => $emit('saveInfoIRCode', boardId, receiveRawdata, receiveCode, IRCodeId, DeviceId)"
       />
       <DeviceIRCodesAddingCard @click="addingIRCode"/>
+      <PopUp 
+        :isModalOpen = "isPopUp"
+        :boardId="props.boardId"
+        @close="popUPswitch"
+        @saveIRCode="(boardId, receiveRawdata, receiveCode) => $emit('saveNewIRCode', boardId, receiveRawdata, receiveCode)"
+      />
     </div>
   </div>
 </template>

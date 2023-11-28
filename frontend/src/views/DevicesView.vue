@@ -41,36 +41,78 @@
     }
   }
 
-  function handleIRCodeRename(id, name) {
-    console.log('renaming', id, 'to', name);
-    /**
-     * TODO: api call to update irCode
-     */
+  async function handlSavingNewIRCode( boardId, receiveRawdata, receiveCode){
+    
+    try {
+      await axios.post(`${globals.$origin}/api/ircodes`, {
+        deviceId: currentId,
+        name: 'New IRCode',
+        description: 'New Description',
+        code: receiveCode,
+        rawData: receiveRawdata,
+      });
+    } catch(err) {
+      console.error(err);
+    }
     fetchDevice();
   }
 
-  function handleIRCodeRedescribe(id, description) {
-    console.log('redescribe', id, 'to', description);
-    /**
-     * TODO: api call to update irCode
-     */
+  async function handleSavingInfoIRCode( boardId, receiveRawdata, receiveCode, IRCodeId, DeviceId) {
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/${IRCodeId}`, {
+        code: receiveCode,
+        rawData: receiveRawdata,
+      });
+    } catch(err) {
+      console.error(err);
+    }
     fetchDevice();
   }
 
-  function handleIRCodeDelete(id) {
-    console.log('delete', id);
+  async function handleIRCodeRename(id, name) {
     /**
-     * TODO: api call to update irCode
+     * * PUT /api/ircodes/{ircodesId}
      */
+
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/${id}`, {
+        name,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
   }
 
-  function handleSavingIRCode( boardId, receiveRawdata, IRCodeId, deviceId) {
-    console.log('Save IRCode', receiveRawdata, "BoardID", boardId, "IRCodeID", IRCodeId, "DeviceID", deviceId);
+  async function handleIRCodeRedescribe(id, description) {
     /**
-     * TODO: api call to unpair the board
+     * * PUT /api/ircodes/{ircodesId}
      */
+
+    try {
+      await axios.put(`${globals.$origin}/api/ircodes/${id}`, {
+        description,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
     fetchDevice();
+  }
+
+  async function handleIRCodeDelete(id) {
+    /**
+     * * DELETE /api/ircodes/{ircodesId}
+     */
+    try {
+      await axios.delete(`${globals.$origin}/api/ircodes/${id}`);
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
+
   }
 
   async function handleUpdateDeviceInfo(device) {
@@ -225,10 +267,6 @@
     fetchDevice();
   }
 
-  function handleAddingIRCode() {
-    fetchDevice();
-  }
-
   onMounted(() => {
     fetchDevice();
     fetchBoardList();
@@ -260,12 +298,11 @@
         <DeviceIRCodes
           :IRCodes = "device.irCodes"
           :boardId = "device.boardId"
-          :deviceId="device.id"
           @rename="handleIRCodeRename"
           @redescribe="handleIRCodeRedescribe"
           @delete="handleIRCodeDelete"
-          @saveIRCode="handleSavingIRCode"
-          @addIRCode="handleAddingIRCode"
+          @saveInfoIRCode="handleSavingInfoIRCode"
+          @saveNewIRCode="handlSavingNewIRCode"
         />
     </div>
   </div>
