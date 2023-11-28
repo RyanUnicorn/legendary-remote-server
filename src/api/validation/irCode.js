@@ -5,6 +5,7 @@ module.exports = {
         // ircodeId
         params: object({
             id: number().positive().integer(),
+            boardId: string().length(12).uppercase().matches(/^[0-F]{12}$/),
         }),
 
         // ircode data

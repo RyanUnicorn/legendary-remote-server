@@ -18,7 +18,7 @@ module.exports = {
     recordIrcode: [validate(irCode.schema, MODE.BODY),
         async (req, res) => {
             try {
-                const board = req.body;
+                const board = req.params;
                 const irCode = await service.recordIrcode(board);
                 res.status(200).send(irCode);
             } catch (err) {

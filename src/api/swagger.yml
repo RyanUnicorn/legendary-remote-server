@@ -407,7 +407,7 @@ paths:
         '404':
           description: Board not found
 
-  /ircodes/record:
+  /ircodes/record/{boardId}:
     get:
       tags:
         - "ircodes"
