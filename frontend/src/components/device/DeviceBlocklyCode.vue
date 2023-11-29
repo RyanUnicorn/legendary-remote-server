@@ -1,11 +1,14 @@
 <script setup>
-  const blocklyPath = "/blocklyPath";
+  import { useRoute, useRouter } from 'vue-router';
+  const router = useRouter();
+  const route = useRoute();
+  const currentId = route.params.id;
 </script>
 
 <template>
   <div class="neu-box blocklyWrapper">
     <h3>Blockly Code</h3>
-    <RouterLink :to= "blocklyPath">
+    <RouterLink :to= "`/blockly/${currentId}`">
       <div class="neu-box editButton">  
         EDIT
       </div>
