@@ -1,33 +1,8 @@
-const { client, ...mqtt } = require('./client');
+const { TOPIC, client, ...mqtt } = require('./client');
 const { sendRaw } = require('./irCode');
-const { irCode: model, entity: {listEntities} } = require('../api/model');
+const { irCode: model, entity: {listEntities}, device: {listDevices} } = require('../api/model');
 const { device } = require('../api/validation');
-
-
-const DISCOVERY_PREFIX = 'homeassistant';
-const DISCOVERY_SUFIX = 'config';
-const ENTITY_PREFIX = 'entity';
-const COMMAN_SUFIX = 'cmnd';
-const STATE_SUFIX = 'state';
-
-/**
- * Home Assistant's MQTT topics builder.
- * See link down below `DISCOVERY MESSAGES`/`Discovery topic` section,
- * or `Entity integrations supported by MQTT discovery` section.
- * @link https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery
- * @returns A topic.
- */
-const TOPIC = {
-    discovery: (entity) => 
-        `${DISCOVERY_PREFIX}/${entity.type}/${entity.id}/${DISCOVERY_SUFIX}`,
-    
-    command: (entity) =>
-        `${ENTITY_PREFIX}/${entity.deviceId}/${entity.id}/${COMMAN_SUFIX}`,
-
-    state: (entity) =>
-        `${ENTITY_PREFIX}/${entity.deviceId}/${entity.id}/${STATE_SUFIX}`,
-
-}
+const { getAllState, createHaCallBack } = require('./blocklyManager');
 
 /**
  * Convert the the entity of our server into
@@ -43,6 +18,9 @@ function discoveryPayload(entity) {
     // an alias that shorten the code
     const _ = entity;
 
+    /**
+     * TODO Change here if support for Fan, Light, AC is needed
+     */
     // output entity
     let _entity = {
         name: _.name,
@@ -75,8 +53,8 @@ function discoveryPayload(entity) {
     switch (_.type) {
         case 'switch':
             additionalKeys = {
-                payload_on: 'on',
-                payload_off: 'off',
+                payload_on: 'true',
+                payload_off: 'false',
                 state_on: 'true',
                 state_off: 'false',
             };
@@ -93,9 +71,7 @@ function discoveryPayload(entity) {
 
         case 'button':
             additionalKeys = {
-                payload_press: JSON.stringify({
-                    state: 'pressed',
-                }),
+                payload_press: 'true',
             };
 
             break;
@@ -121,28 +97,22 @@ function discoveryPayload(entity) {
     return _entity;
 }
 
-/**
- * TODO: Maybe it should be in blockly
- */
-const routeCmndTopic = async (topic) => mqtt.route(topic, async (topic, message) => {
-    console.log(topic);
-    // const parsedTopic = topic.match(/dev\/([0-F]{12})\/(\d+)\/cmnd\/?(\w+)?/);
-    // let irCode = {
-    //     entityId: parseInt(parsedTopic[2]),
-    //     topicSufix: parsedTopic[3] ? parsedTopic[3] : '',
-    // }
-    // const boardId = parsedTopic[1];
-    // irCode = await model.getIrcode(irCode);
-    // if (!irCode) {
-    //     throw new Error('123');
-    // }
-    // irCode.rawData = JSON.parse(irCode.rawData);
-    // await sendRaw({boardId, irCode});
-    /**
-     * TODO: Blockly
-     * @return state topic
-     */
-});
+async function subCmndTopic(device) {
+    const states = await getAllState(device.id);
+    Object.keys(states).forEach((stateKey) => {
+        mqtt.route(
+            TOPIC.commandFromState(device.id, stateKey),
+            createHaCallBack(device.id, stateKey),
+        );
+    })
+}
+
+async function initSubCmndTopic() {
+    const devices = await listDevices();
+    devices.forEach((device) => {
+        subCmndTopic(device);
+    });
+}
 
 /**
  * Publish the entity to let Home Assistant
@@ -171,8 +141,8 @@ const configHAEntity = (entity) => {
     const state = JSON.stringify(entity[entity.type].state);
     client.publish(TOPIC.state(entity), state, { retain: true });
 
-    const cmndTopic = TOPIC.command(entity);
-    routeCmndTopic(cmndTopic);
+    // const cmndTopic = TOPIC.command(entity);
+    // routeCmndTopic(cmndTopic);
 };
 
 const initHAEntities = async () => {
@@ -185,9 +155,14 @@ const initHAEntities = async () => {
 /**
  * Sync database's entity with Home Assistant's.
  */
-initHAEntities();
+
+function init() {
+    initHAEntities();
+    initSubCmndTopic();
+}
 
 module.exports = {
+    init,
     configHAEntity,
 
     /**
@@ -197,12 +172,10 @@ module.exports = {
      * @param {*} entity
      */
     deleteEntity: (entity) => {
-        // build the topic
-        const topic = dicoveryTopic(entity);
 
         // TODO: should support FAN, HVAC...
         client.publish(TOPIC.state(entity), entity.state, { retain: false });
-        mqtt.unroute(topic);
-        client.publish(topic, '');
+        mqtt.unroute(TOPIC.command(entity));
+        client.publish(TOPIC.discovery(entity), '');
     }
 };

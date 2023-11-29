@@ -9,6 +9,35 @@ client.BOARD_INTERVAL = 1000;
 client.BOARD_TIMEOUT = client.BOARD_INTERVAL + 500;
 client.RECV_TIMEOUT = 10000;
 
+const DISCOVERY_PREFIX = 'homeassistant';
+const DISCOVERY_SUFIX = 'config';
+const ENTITY_PREFIX = 'entity';
+const COMMAN_PREFIX = 'cmnd';
+const STATE_PREFIX = 'state';
+/**
+ * Home Assistant's MQTT topics builder.
+ * See link down below `DISCOVERY MESSAGES`/`Discovery topic` section,
+ * or `Entity integrations supported by MQTT discovery` section.
+ * @link https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery
+ * @returns A topic.
+ */
+const TOPIC = {
+    discovery: (entity) => 
+        `${DISCOVERY_PREFIX}/${entity.type}/${entity.id}/${DISCOVERY_SUFIX}`,
+    
+    command: (entity) =>
+        `${ENTITY_PREFIX}/${COMMAN_PREFIX}/${entity.deviceId}/${entity.id}`,
+
+    state: (entity) =>
+        `${ENTITY_PREFIX}/${STATE_PREFIX}/${entity.deviceId}/${entity.id}`,
+    
+    stateFromState: (deviceId, stateKey) => 
+        `${ENTITY_PREFIX}/${STATE_PREFIX}/${deviceId}/${stateKey}`,
+    
+    commandFromState: (deviceId, stateKey) => 
+        `${ENTITY_PREFIX}/${COMMAN_PREFIX}/${deviceId}/${stateKey}`, 
+}
+
 // {`topic`: {`regexp`, `callback`}, ...}
 let topicsSub = {};
 
@@ -72,6 +101,7 @@ client.on('connect', () => {
 });
 
 module.exports = {
+    TOPIC,
     client,
     route,
     unroute,
