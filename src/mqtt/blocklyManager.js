@@ -169,6 +169,7 @@ async function getAllIrCode(deviceId) {
 
 function createHaCallBack(deviceId, stateKey) {
     return async (topic, message) => {
+        // TODO implement state lock
         const device = await getDevice({id: deviceId});
 
         message = message.toString();
@@ -218,7 +219,7 @@ function createHaCallBack(deviceId, stateKey) {
         // send the ir codes to the queue
         await sendRawList(boardId, irCodeToSend);
         
-        // update the state if blockly wants it
+        // TODO update the state if blockly wants it
 
     }
 }

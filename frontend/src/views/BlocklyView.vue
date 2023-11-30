@@ -66,7 +66,6 @@
 
     async function saveWorkspace(){
         /**
-         * TODO api call to update blockly
          * * PUT /api/devices/{deviceId}
          */
         const JSValue = javascriptGenerator.workspaceToCode(workspace.value);

@@ -118,7 +118,6 @@
   async function handleUpdateDeviceInfo(device) {
     console.log('updating device with body', device);
     /**
-     * TODO api call to update device
      * * PUT /api/devices/{deviceId}
      */
 
@@ -134,7 +133,6 @@
   async function handleDeleteDevice() {
     console.log('deleting device');
     /**
-     * TODO api call to delete device
      * * DELETE /api/devices/{deviceId}
      */
 
@@ -150,7 +148,6 @@
   async function handleRenameEntity(id, name) {
     console.log('renaming entity', id, name);
     /**
-     * TODO apicall to rename an entity
      * * PUT /api/entities/{entityId}
      */
 
@@ -168,7 +165,6 @@
   async function handleDeleteEntity(id) {
     console.log('deleting entity', id);
     /**
-     * TODO apicall to delete entity
      */
     try {
       await axios.delete(`${globals.$origin}/api/entities/${id}`);
@@ -181,7 +177,7 @@
   async function handleNewNumber(entityName, options) {
     console.log('new number', entityName, options);
     /**
-     * TODO apicall to add a new number entity
+     * * POST /api/entities
      */
     
      try {
@@ -204,7 +200,7 @@
   async function handleNewSelect(entityName, options) {
     console.log('new select', entityName, options);
     /**
-     * TODO apicall to add a new select entity
+     * * POST /api/entities
      */
     
     try {
@@ -227,7 +223,7 @@
   async function handleNewButton(entityName) {
     console.log('new button', entityName);
     /**
-     * TODO apicall to add a new button entity
+     * * POST /api/entities
      */
 
     try {
@@ -247,7 +243,6 @@
   async function handleNewSwitch(entityName) {
     console.log('new switch', entityName);
     /**
-     * TODO apicall to add a new switch entity
      * * POST /api/entities
      */
 
