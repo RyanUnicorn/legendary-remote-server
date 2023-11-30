@@ -515,9 +515,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  originalStates:
-                    $ref: '#/components/schemas/blockly-state'
-                  targetStates:
+                  states:
                     $ref: '#/components/schemas/blockly-state'
                   consts:
                     $ref: '#/components/schemas/blockly-const'
