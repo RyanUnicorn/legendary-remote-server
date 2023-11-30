@@ -58,11 +58,14 @@ async function loop(boardId) {
             //     mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
             // });
     } catch (error) {
-        console.error(error);
+        irCode.failed(error);
     }
 
     if (--irCode.retries <= 0) {
-        sendingQueue[boardId].queue.shift();
+        sendingQueue[boardId].queue.forEach((_irCode) => {
+            _irCode.failed('timeout');
+        });
+        sendingQueue[boardId].queue = [];
     }
     // console.log(sendingQueue[boardId].queue);
     loop(boardId);
@@ -95,15 +98,31 @@ async function sendRaw({boardId, irCode}) {
             boardId: boardId,
             retries: QUEUE.retries,
             sent: resolve,
-            fialed: reject,
+            failed: reject,
         });
         sendingQueue[boardId].queue.push(irCode);
         sendingQueue[boardId].start();
     })
 }
 
+async function sendRawList(boardId, irCodes) {
+    irCodes.forEach((_irCode) => {
+        sendRaw({boardId, irCode: _irCode});
+    });
+}
+
 (async () => {
     await init();
+    // let irCodes = [];
+    // const irCode = {
+    //     "boardId": "24D7EBCCCEC1",
+    //     "code": "0x1E7040BF",
+    //     "rawData": [9002,4562,524,594,544,610,526,612,502,1728,546,1708,544,1726,524,1728,548,610,502,614,524,1730,522,1728,548,1706,546,592,546,608,506,614,548,586,528,610,502,1728,548,592,522,614,526,590,546,592,522,594,544,590,546,1708,544,592,546,1708,544,1730,522,1728,548,1708,544,1728,522,1728,548,41280,9002,2290,544]
+    // };
+    // for (let index = 0; index < 10; index++) {        
+    //     irCodes.push(irCode);
+    // }
+    // sendRawList('24D7EBCCCEC1', irCodes);
 })();
 
 module.exports = {
@@ -172,5 +191,6 @@ module.exports = {
     // }),
 
     sendRaw,
+    sendRawList,
 };
 

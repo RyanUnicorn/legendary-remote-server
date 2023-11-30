@@ -1,5 +1,6 @@
 const { device: {getDevice} } = require('../api/model');
 const { TOPIC } = require('./client');
+const Interpreter = require('js-interpreter');
 
 /**
  * This function returns all the state of a device
@@ -145,7 +146,7 @@ async function getAllConst(deviceId) {
         }
     });
 
-    return allConst;
+    return { consts: allConst, boardId: device.boardId };
 }
 
 async function getAllIrCode(deviceId) {
@@ -157,22 +158,40 @@ async function getAllIrCode(deviceId) {
         allIrCode[_.id] = {
             blockName: _.name,
             blockDescription: _.description,
+            rawData: _.rawData,
+            code: _.code,
         };
     });
 
     return allIrCode;
 }
 
-
 function createHaCallBack(deviceId, stateKey) {
     return async (topic, message) => {
         message = message.toString();
+        let shouldApplyStateChange = false;
 
         // get the current data needed by the blockly code from the db
-        const { originalStates, consts, irCodes, targetStates }
+        const { originalStates, consts, irCodes, targetStates, boardId }
             = await haCallbackGetData(deviceId, stateKey, message);
 
         // create functions that bridge the js interpretor and the above datas and ir codes
+
+        const getOriginalState = (stateKey) => {
+            console.log(stateKey);
+        };
+
+        const getTargetState = (stateKey) => targetStates[stateKey];
+        const getConst = (constKey) => consts[constKey];
+        const applyStateChange = () => {
+            shouldApplyStateChange = true;
+        }
+
+        const init = (interpreter, globalObject) => {
+            interpreter.setProperty(globalObject, );
+        };
+        
+        console.log(init(1, 2));
         
         // run blockly code using js interpretor
 
@@ -184,7 +203,7 @@ function createHaCallBack(deviceId, stateKey) {
 }
 
 async function haCallbackGetData(deviceId, stateKey, message) {
-    const [ originalStates, consts, irCodes ] = await Promise.all([
+    const [ originalStates, { consts, boardId }, irCodes ] = await Promise.all([
         getAllState(deviceId),
         getAllConst(deviceId),
         getAllIrCode(deviceId),
@@ -203,7 +222,7 @@ async function haCallbackGetData(deviceId, stateKey, message) {
     // finally set the target state to the sent value
     targetStates[stateKey].state = targetStateValue;
 
-    return { originalStates, consts, irCodes, targetStates };
+    return { originalStates, consts, irCodes, targetStates, boardId };
 }
 
 module.exports = {
