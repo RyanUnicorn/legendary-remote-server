@@ -24,7 +24,6 @@
         try {
             const result = await axios.get(`${globals.$origin}/api/devices/${currentId}`);
             blocklyValue.value = result.data;
-            // console.log(blocklyValue.value.blocklyWorkspace);
         } catch(err) {
             console.error(err);
         }
@@ -85,13 +84,13 @@
             showSuccessPopup.value = true;
             setTimeout(() => {
                 showSuccessPopup.value = false;
-            }, 2000);
+            }, 1000);
         }
         else {
             showFailPopup.value = true;
             setTimeout(() => {
                 showFailPopup.value = false;
-            }, 2000);
+            }, 1000);
         }
         
     }
@@ -178,7 +177,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        fill:var(--color-accent)
+        fill:var(--color-accent-mute)
     }
 
     .failPopUp {
@@ -189,6 +188,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        fill:var(--color-accent)
+        fill:var(--color-accent-mute)
     }
 </style>

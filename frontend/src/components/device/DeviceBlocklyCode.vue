@@ -1,11 +1,58 @@
 <script setup>
-  import { useRoute, useRouter } from 'vue-router';
-  const router = useRouter();
+  import ToolBox from '../../blockly/ToolBox.vue'
+  import { useRoute } from 'vue-router';
+  import Blockly from 'blockly';
+  import { ref, onMounted, shallowRef } from 'vue';
+  import { globals } from '../../main';
+  import axios from 'axios';
+  
   const route = useRoute();
   const currentId = route.params.id;
+  const blocklyValue = ref([]);
+  const blocklyDiv = ref(null);
+  const workspace = shallowRef();
+
+  async function fetchBlockly(){
+    /**
+     * * GET /api/devices/{deviceId}
+     */
+
+    try {
+      const result = await axios.get(`${globals.$origin}/api/devices/${currentId}`);
+      blocklyValue.value = result.data;
+    } catch(err) {
+      console.error(err);
+    }
+
+  }
+
+  function loadingWorkspace(){
+    const jsonString = blocklyValue.value.blocklyWorkspace;
+    const parsedObject = JSON.parse(jsonString);
+    Blockly.serialization.workspaces.load(parsedObject, workspace.value);
+  }
+
+  const initializeBlockly = () => {
+    workspace.value = Blockly.inject(blocklyDiv.value, {
+      readOnly: true,
+    });
+    const workspaceSvg = workspace.value.getParentSvg();
+    if (workspaceSvg) {
+      workspaceSvg.style.backgroundColor = 'var(--color-background)';
+      workspaceSvg.style.borderRadius =  'var(--border-radius)';
+      workspaceSvg.style.boxShadow = 'inset 5px 5px 16px #bebebe, inset -5px -5px 16px #ffffff';
+    }
+  };
+
+  onMounted(async () => {
+    await fetchBlockly();
+    initializeBlockly();
+    loadingWorkspace();
+  });
 </script>
 
 <template>
+  <ToolBox/>
   <div class="neu-box blocklyWrapper">
     <h3>Blockly Code</h3>
     <RouterLink :to= "`/blockly/${currentId}`">
@@ -13,13 +60,15 @@
         EDIT
       </div>
     </RouterLink>
-    <div class="blockly"></div>
+    <div class="blockly">
+        <div ref="blocklyDiv" class="blockly-area" />
+    </div>
   </div>
 </template>
 
 <style scoped>
 
-  .blocklyWrapper{
+  .blocklyWrapper {
     min-width: 300px;
     position: relative;
     padding: var(--spacing-const);
@@ -38,7 +87,12 @@
     }
   }
 
-  .editButton{
+  .blockly-area {
+    height: 100%;
+    width: 100%;
+  }
+
+  .editButton {
     height: 10%;
     width: 10%;
     min-width: 70px;
@@ -56,13 +110,10 @@
     justify-content: center;
   }
 
-  .blockly{
+  .blockly {
     height: 85%;
     width: 100%;
-
-    border-radius: var(--border-radius);
-    box-shadow: inset  5px  5px 16px #bebebe,
-                inset -5px -5px 16px #ffffff;
   }
+
 
 </style>
