@@ -248,5 +248,7 @@ async function haCallbackGetData(deviceId, stateKey, message) {
 
 module.exports = {
     getAllState,
+    getAllConst,
+    getAllIrCode,
     createHaCallBack,
 }

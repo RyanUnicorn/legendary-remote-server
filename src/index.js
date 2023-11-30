@@ -34,6 +34,7 @@ router.use('/boards', apiRouter.board);
 router.use('/devices', apiRouter.device);
 router.use('/entities', apiRouter.entity);
 router.use('/ircodes', apiRouter.irCode);
+router.use('/blockly', apiRouter.blockly);
 
 homeAssistant.init();
 
