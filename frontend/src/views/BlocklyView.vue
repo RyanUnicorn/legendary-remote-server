@@ -35,6 +35,12 @@
             toolbox: document.getElementById(toolBox),
         });
 
+        const workspaceSvg = workspace.value.getParentSvg();
+        if (workspaceSvg) {
+            workspaceSvg.style.backgroundColor = 'var(--color-background)';
+            workspaceSvg.style.borderRadius =  'var(--border-radius)';
+        }
+
         if (workspace.value) {
             workspace.value.addChangeListener(updateCode);
         } else {
@@ -146,11 +152,6 @@
         justify-content: center;
 
         cursor: pointer;
-    }
-
-    .blocklySvg {
-        background-color: var(--color-background);
-        border-radius: var(--border-radius);
     }
 
     .blocklyToolboxDiv {
