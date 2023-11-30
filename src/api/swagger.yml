@@ -12,6 +12,8 @@ tags:
     description: Entity stuffs here
   - name: ircodes
     description: IrCode stuffs here
+  - name: blockly
+    description: Blockly stuffs here
 
 paths:
   # boards stuff
@@ -497,6 +499,34 @@ paths:
         '404':
           description: irCode not found
 
+  # blockly stuff
+  /blockly/{deviceId}:
+    get:
+      tags:
+        - "blockly"
+      summary: Get all the require data blockly
+      description: Get the 'State', 'Const' and 'IrCode'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  originalStates:
+                    $ref: '#/components/schemas/blockly-state'
+                  targetStates:
+                    $ref: '#/components/schemas/blockly-state'
+                  consts:
+                    $ref: '#/components/schemas/blockly-const'
+                  irCodes:
+                    $ref: '#/components/schemas/blockly-ir-code'
+        '404':
+          description: Device not found
+
+
 
 components:
   schemas:
@@ -666,3 +696,62 @@ components:
           type: number
           example: 69
         
+    blockly-state:
+      type: object
+      properties:
+        stateKey:
+          type: object
+          properties:
+            blockName:
+              type: string
+              example: My Switch
+            state:
+              type: string
+              example: true
+            type:
+              type: string
+              example: boolean
+            entityId:
+              type: string
+              example: 1
+            statePrefix:
+              type: string
+              example: ''
+
+    blockly-const:
+      type: object
+      properties:
+        stateKey:
+          type: object
+          properties:
+            blockName:
+              type: string
+              example: My Number >> max
+            const:
+              type: number
+              example: 100
+            type:
+              type: string
+              example: number
+    
+
+    blockly-ir-code:
+      type: object
+      properties:
+        constKey:
+          type: object
+          properties:
+            blockName:
+              type: string
+              example: Fan Power
+            blockDescription:
+              type: string
+              example: This toggles the fan's power
+            rawData:
+              type: array
+              items:
+                type: number
+              example: [123, 234, 345, 456, 567, 678, 789]
+            code:
+              type: string
+              example: '0x123456789ABCDEF'
