@@ -1,6 +1,7 @@
 const { device: {getDevice} } = require('../api/model');
 const { TOPIC } = require('./client');
 const Interpreter = require('js-interpreter');
+const { sendRawList } = require('./irCode');
 
 /**
  * This function returns all the state of a device
@@ -158,7 +159,7 @@ async function getAllIrCode(deviceId) {
         allIrCode[_.id] = {
             blockName: _.name,
             blockDescription: _.description,
-            rawData: _.rawData,
+            rawData: JSON.parse(_.rawData),
             code: _.code,
         };
     });
@@ -168,6 +169,8 @@ async function getAllIrCode(deviceId) {
 
 function createHaCallBack(deviceId, stateKey) {
     return async (topic, message) => {
+        const device = await getDevice({id: deviceId});
+
         message = message.toString();
         let shouldApplyStateChange = false;
 
@@ -177,26 +180,44 @@ function createHaCallBack(deviceId, stateKey) {
 
         // create functions that bridge the js interpretor and the above datas and ir codes
 
-        const getOriginalState = (stateKey) => {
-            console.log(stateKey);
-        };
+        let irCodeToSend = [];
+
+        const getOriginalState = (stateKey) => originalStates[stateKey];
 
         const getTargetState = (stateKey) => targetStates[stateKey];
         const getConst = (constKey) => consts[constKey];
         const applyStateChange = () => {
             shouldApplyStateChange = true;
         }
+        const queueIrCode = (irCodeKey) => {
+            irCodeToSend.push(irCodes[irCodeKey]);
+        }
 
         const init = (interpreter, globalObject) => {
-            interpreter.setProperty(globalObject, );
+
+            interpreter.setProperty(globalObject, 'getOriginalState',
+                interpreter.createNativeFunction(getOriginalState));
+            interpreter.setProperty(globalObject, 'getTargetState',
+                interpreter.createNativeFunction(getTargetState));
+            interpreter.setProperty(globalObject, 'getConst',
+                interpreter.createNativeFunction(getConst));
+            interpreter.setProperty(globalObject, 'applyStateChange',
+                interpreter.createNativeFunction(applyStateChange));
+            interpreter.setProperty(globalObject, 'queueIrCode',
+                interpreter.createNativeFunction(queueIrCode));
         };
         
-        console.log(init(1, 2));
-        
+        // TODO: implement enableUpdate things
         // run blockly code using js interpretor
+        const blocklyJS = `queueIrCode(3);`;
+
+        const blocklyInterpreter = new Interpreter(blocklyJS, init);
+
+        blocklyInterpreter.run();
 
         // send the ir codes to the queue
-
+        await sendRawList(boardId, irCodeToSend);
+        
         // update the state if blockly wants it
 
     }

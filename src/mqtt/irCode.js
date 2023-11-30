@@ -106,9 +106,12 @@ async function sendRaw({boardId, irCode}) {
 }
 
 async function sendRawList(boardId, irCodes) {
+    let sendList = [];
     irCodes.forEach((_irCode) => {
-        sendRaw({boardId, irCode: _irCode});
+        sendList.push(sendRaw({boardId, irCode: _irCode}));
     });
+
+    return await Promise.all(sendList);
 }
 
 (async () => {

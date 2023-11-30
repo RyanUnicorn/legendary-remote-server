@@ -29,7 +29,7 @@ model Device {
 
   id               Int     @id @default(autoincrement())
   name             String
-  enableUpdate     Boolean @default(true)
+  enableUpdate     Boolean @default(false)
   blocklyJS        String?
   blocklyWorkspace String?
 
