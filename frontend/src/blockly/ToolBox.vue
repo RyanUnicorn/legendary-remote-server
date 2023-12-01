@@ -6,23 +6,23 @@
   import axios from 'axios';
 
   const props = defineProps([
-    'currentId',
+    'deviceId',
   ]);
 
   let blocksValue;
 
   async function fetchBlocks(){
-        /**
-         * * GET /api/blockly/{deviceId}
-         */
-        try {
-          const result = await axios.get(`${globals.$origin}/api/blockly/${props.currentId}`);
-          blocksValue = result.data;
-          console.log(blocksValue);
-        } catch(err) {
-          console.error(err);
-        }
-    }
+      /**
+       * * GET /api/blockly/{deviceId}
+       */
+      try {
+        const result = await axios.get(`${globals.$origin}/api/blockly/${props.deviceId}`);
+        blocksValue = result.data;
+        console.log(blocksValue);
+      } catch(err) {
+        console.error(err);
+      }
+  }
 
   Blockly.Blocks["Example 1"] = {
     init: function () {
@@ -111,9 +111,17 @@
 <template>
 
   <xml id="toolbox-example1" style="display:none;">
-    <category name="Math" colour="230">
-      <block type="math_number"></block>
-      <block type="math_arithmetic"></block>
+    <category name="Control">
+      <block type="controls_if"></block>
+    </category>
+    <category name="Logic">
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_boolean"></block>
+    </category>
+    <category name="Core">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
     </category>
     <category name="Examples" colour="120">
       <block type="Example 1"></block>

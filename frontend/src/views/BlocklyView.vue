@@ -109,7 +109,7 @@
 </script>
 
 <template>
-    <ToolBox :currentId="currentId"/>
+    <ToolBox :deviceId="currentId"/>
     <div class="blocklyArea">
         <div ref="blocklyDiv" class="neu-box" style="height: 100%; width: 100%;"/>
         <div @click="saveWorkspace" class="neu-box save-btn">Save</div>
