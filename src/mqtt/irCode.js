@@ -12,6 +12,13 @@ const QUEUE = {
     retries: 3,
 }
 
+/**
+ * This is a helper function to delay for a set amount of ms, better use with await
+ * @param {*} ms milliseconds to delay
+ * @returns 
+ */
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
 let sendingQueue = {};
 
 async function init() {
@@ -52,17 +59,15 @@ async function loop(boardId) {
     try {
         const result = await Promise.race([timeout, sent])
         irCode.sent(result);
-            // .then(irCode.sent)
-            // .catch(irCode.failed)
-            // .finally(() => {
-            //     mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
-            // });
+        mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
+        await delay(QUEUE.timeout);
     } catch (error) {
         irCode.failed(error);
     }
 
     if (--irCode.retries <= 0) {
         sendingQueue[boardId].queue.forEach((_irCode) => {
+            mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
             _irCode.failed('timeout');
         });
         sendingQueue[boardId].queue = [];

@@ -12,6 +12,7 @@ module.exports = {
         const _entity = await model.createEntity(entity);
 
         homeAssistant.configHAEntity(_entity);
+        homeAssistant.subCmndTopic({id: _entity.deviceId});
 
         return _entity;
     },

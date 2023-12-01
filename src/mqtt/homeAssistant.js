@@ -28,6 +28,7 @@ function discoveryPayload(entity) {
         unique_id: _.id,
         command_topic: TOPIC.command(_),
         state_topic: TOPIC.state(_),
+        optimistic: false,
         // ? Maybe we'll use it someday.
         // availability:
         //     {
@@ -100,11 +101,12 @@ function discoveryPayload(entity) {
 async function subCmndTopic(device) {
     const states = await getAllState(device.id);
     Object.keys(states).forEach((stateKey) => {
+        mqtt.unroute(TOPIC.commandFromState(device.id, stateKey));
         mqtt.route(
             TOPIC.commandFromState(device.id, stateKey),
             createHaCallBack(device.id, stateKey),
         );
-    })
+    });
 }
 
 async function initSubCmndTopic() {
@@ -164,6 +166,7 @@ function init() {
 module.exports = {
     init,
     configHAEntity,
+    subCmndTopic,
 
     /**
      * Delete the device by publishing a MQTT
