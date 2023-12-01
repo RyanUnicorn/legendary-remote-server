@@ -32,7 +32,7 @@
             {{ props.deviceName}}
         </h1>
         <h2>
-            {{ props.entities}} entities
+            {{ props.entities }} {{props.entities <= 1 ? ' entity':' entities'}}
         </h2>
         <div class="rectangle">
             {{ props.enableUpdate == true ? 'Enabled' : 'Disabled' }}

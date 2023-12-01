@@ -50,7 +50,7 @@
     <h3>Devices</h3>
     <div class="container">
       <RouterLink v-for="data in devices" :key="data.id" :to="`/devices/${data.id}`">
-        <OverviewDevicesInfoCard :deviceName="data.name" :entities="data.entityCount" :enableUpdate="data.enableUpdate"/>
+        <OverviewDevicesInfoCard :deviceName="data.name" :entities="data.entities.length" :enableUpdate="data.enableUpdate"/>
       </RouterLink>
       <OverviewDevicesAddingCard @click="addDevice"/>
     </div>
