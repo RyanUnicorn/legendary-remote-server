@@ -14,7 +14,7 @@
     const workspace = shallowRef();
     const showSuccessPopup = ref(false);
     const showFailPopup = ref(false);
-    var toolBox = "toolbox-example1";
+    var toolBox = "Default-toolbox";
 
     async function fetchBlockly(){
         /**
