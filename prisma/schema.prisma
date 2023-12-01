@@ -31,7 +31,7 @@ model Device {
   name             String
   enableUpdate     Boolean @default(false)
   blocklyJS        String?
-  blocklyWorkspace String?
+  blocklyWorkspace String @default("{}")
 
   entities Entity[]
   irCodes  IrCode[]
