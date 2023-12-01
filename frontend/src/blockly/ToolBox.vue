@@ -1,6 +1,28 @@
-<script>
+<script setup>
   import * as Blockly from "blockly/core";
+  import { onMounted, ref } from 'vue';
   import {javascriptGenerator, Order} from "blockly/javascript";
+  import { globals } from '../main';
+  import axios from 'axios';
+
+  const props = defineProps([
+    'currentId',
+  ]);
+
+  let blocksValue;
+
+  async function fetchBlocks(){
+        /**
+         * * GET /api/blockly/{deviceId}
+         */
+        try {
+          const result = await axios.get(`${globals.$origin}/api/blockly/${props.currentId}`);
+          blocksValue = result.data;
+          console.log(blocksValue);
+        } catch(err) {
+          console.error(err);
+        }
+    }
 
   Blockly.Blocks["Example 1"] = {
     init: function () {
@@ -80,6 +102,10 @@
     const code = `fetch_price(${valueFetch},${variableVariable});\n`;
     return code;
   };
+
+  onMounted(()=>{
+    fetchBlocks();
+  });
 </script>
 
 <template>

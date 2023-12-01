@@ -52,7 +52,7 @@
 </script>
 
 <template>
-  <ToolBox/>
+  <ToolBox :currentId="currentId"/>
   <div class="neu-box blocklyWrapper">
     <h3>Blockly Code</h3>
     <RouterLink :to= "`/blockly/${currentId}`">
