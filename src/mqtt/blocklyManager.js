@@ -272,7 +272,7 @@ async function haApplyStateChange(device, stateKey, targetState) {
     entity[entity.type] = {};
     entity[entity.type][stateName] = targetState.state;
     try {
-        if(targetState.entityType == 'button') {
+        if(targetState.entityType != 'button') {
             await updateEntity(entity);
         }
     } catch(err) {
@@ -310,18 +310,20 @@ function createHaCallBack(deviceId, stateKey) {
         
         const device = await getDevice({id: deviceId});
 
-        if(!device.enableUpdate) {
-            // only update the state, no further instructions needed
-            haApplyStateChange(device, stateKey, targetStates[stateKey]);
-            return;
-        }
-
         message = message.toString();
         let shouldApplyStateChange = false;
 
         // * get the current data needed by the blockly code from the db
         const { originalStates, consts, irCodes, targetStates, boardId }
             = await haCallbackGetData(deviceId, stateKey, message);
+
+        // * don't send any irCodes if it's not enableUpdate
+        if(!device.enableUpdate) {
+            // only update the state, no further instructions needed
+            haApplyStateChange(device, stateKey, targetStates[stateKey]);
+            unlockState(stateKey);
+            return;
+        }
 
         // * create functions that bridge the js interpreter and the above datas and ir codes
 
@@ -351,6 +353,7 @@ function createHaCallBack(deviceId, stateKey) {
             // timeout, something went wrong on the board side
             // so no change is applied
             haNoStateChange(device, stateKey, originalStates[stateKey]);
+            unlockState(stateKey);
             return;
         }
         
