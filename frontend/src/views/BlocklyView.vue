@@ -102,6 +102,8 @@
 
     onMounted(async () => {
         await fetchBlockly();
+        // delay for 250 ms to kinda fix the toolbox not loading fully
+        await new Promise((res) => setTimeout(res, 250));
         initializeBlockly();
         loadingWorkspace();
     });

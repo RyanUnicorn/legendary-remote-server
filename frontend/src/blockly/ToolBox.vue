@@ -25,14 +25,14 @@
        */
       try {
         const result = await axios.get(`${globals.$origin}/api/blockly/${props.deviceId}`);
-        blocksValue.value = result.data;
+        return result.data;
         // console.log(blocksValue.value);
       } catch(err) {
         console.error(err);
       }
   }
 
-  function initBlocks(){
+  function initBlocks(blocklyData){
     Blockly.Blocks['send_ir_code'] = {
       init: function() {
         this.appendValueInput("IR_CODE")
@@ -51,14 +51,14 @@
       return code;
     };
 
-    Object.keys(blocksValue.value.irCodes).forEach((key) => {
+    Object.keys(blocklyData.irCodes).forEach((key) => {
       Blockly.Blocks[`IR_${key}`] = {
         init: function() {
           this.appendDummyInput()
-              .appendField(blocksValue.value.irCodes[key].blockName);
+              .appendField(blocklyData.irCodes[key].blockName);
           this.setOutput(true, "ir_code_id");
           this.setColour(30);
-          this.setTooltip(blocksValue.value.irCodes[key].blockDescription);
+          this.setTooltip(blocklyData.irCodes[key].blockDescription);
         }
       };
 
@@ -68,13 +68,13 @@
       };
     });
 
-    Object.keys(blocksValue.value.states).forEach((key) => {
+    Object.keys(blocklyData.states).forEach((key) => {
       Blockly.Blocks[`State_${key}`] = {
         init: function() {
           this.appendDummyInput()
-              .appendField(blocksValue.value.states[key].blockName)
+              .appendField(blocklyData.states[key].blockName)
               .appendField(new Blockly.FieldDropdown([["target state","TAR"], ["original state","ORI"]]), "TYPE");
-          this.setOutput(true, upperCase(blocksValue.value.states[key].type));
+          this.setOutput(true, upperCase(blocklyData.states[key].type));
           this.setColour(270);
         }
       };
@@ -86,17 +86,16 @@
       };
     });
 
-    Object.keys(blocksValue.value.consts).forEach((key) => {
-      if(blocksValue.value.consts[key].type == 'array'){
-        const dropdown = blocksValue.value.consts[key].const.reduce((arr, element) => {
+    Object.keys(blocklyData.consts).forEach((key) => {
+      if(blocklyData.consts[key].type == 'array'){
+        const dropdown = blocklyData.consts[key].const.reduce((arr, element) => {
           arr.push([element, element]);
           return arr;
         }, []);
-        console.log(dropdown);
         Blockly.Blocks[`Const_${key}`] = {
           init: function() {
             this.appendDummyInput()
-                .appendField(blocksValue.value.consts[key].blockName)
+                .appendField(blocklyData.consts[key].blockName)
                 .appendField(new Blockly.FieldDropdown(dropdown), "OPTION");
             this.setOutput(true, "String");
             this.setColour(150);
@@ -112,8 +111,8 @@
         Blockly.Blocks[`Const_${key}`] = {
           init: function() {
             this.appendDummyInput()
-                .appendField(blocksValue.value.consts[key].blockName);
-            this.setOutput(true, upperCase(blocksValue.value.consts[key].type));
+                .appendField(blocklyData.consts[key].blockName);
+            this.setOutput(true, upperCase(blocklyData.consts[key].type));
             this.setColour(150);
           }
         };
@@ -127,9 +126,9 @@
   }
 
   onMounted(async()=>{
-    await fetchBlocks();
-    await new Promise((res) => setTimeout(res, 250));
-    initBlocks();
+    const blocklyData = await fetchBlocks();
+    initBlocks(blocklyData);
+    blocksValue.value = blocklyData;
   });
 </script>
 
