@@ -31,7 +31,8 @@ model Device {
   name             String
   enableUpdate     Boolean @default(false)
   blocklyJS        String?
-  blocklyWorkspace String @default("{}")
+  blocklyWorkspace String  @default("{}")
+  irSendInterval   Int     @default(150)
 
   entities Entity[]
   irCodes  IrCode[]

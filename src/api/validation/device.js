@@ -14,6 +14,7 @@ module.exports = {
             enableUpdate: boolean(),
             blocklyJS: string().nullable(),
             blocklyWorkspace: string().nullable(),
+            irSendInterval: number().integer().min(0),
         }),
     },
 }
