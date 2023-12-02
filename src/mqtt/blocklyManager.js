@@ -213,10 +213,10 @@ function haCreateInterpreterFunctions({
     targetStates,
     irCodeToSend,
 }) {
-    const getOriginalState = (stateKey) => originalStates[stateKey];
+    const getOriginalState = (stateKey) => originalStates[stateKey].state;
 
-    const getTargetState = (stateKey) => targetStates[stateKey];
-    const getConst = (constKey) => consts[constKey];
+    const getTargetState = (stateKey) => targetStates[stateKey].state;
+    const getConst = (constKey) => consts[constKey].const;
     const queueIrCode = (irCodeKey) => {
         if(irCodeKey != '') {
             irCodeToSend.push(Object.assign({}, irCodes[irCodeKey])); // Object.assign to avoid pass by refrence
@@ -342,12 +342,12 @@ function createHaCallBack(deviceId, stateKey) {
             = haCreateInterpreterInit({ getOriginalState, getTargetState, getConst, applyStateChange, queueIrCode });
         
         // * run blockly code using js interpreter
-        const blocklyJS = `queueIrCode(1);queueIrCode(2);queueIrCode(2);queueIrCode(3);queueIrCode(3);queueIrCode(1);`;
+        const blocklyJS = device.blocklyJS;
 
         const blocklyInterpreter = new Interpreter(blocklyJS, interpreterInit);
 
         blocklyInterpreter.run();
-
+        
         // * send the ir codes to the queue
         try {
             await sendRawList(boardId, irCodeToSend);

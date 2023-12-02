@@ -8,6 +8,7 @@ const IR_SENDRAW = 'sendraw';
 const IR_SENT = 'sent';
 
 const QUEUE = {
+    interval: 150,
     timeout: 250,
     retries: 3,
 }
@@ -60,7 +61,7 @@ async function loop(boardId) {
         const result = await Promise.race([timeout, sent])
         irCode.sent(result);
         mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
-        await delay(QUEUE.timeout);
+        await delay(QUEUE.interval);
     } catch (error) {
         irCode.failed(error);
     }

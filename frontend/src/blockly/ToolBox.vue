@@ -51,6 +51,21 @@
       return code;
     };
 
+    Blockly.Blocks['apply_state_change'] = {
+      init: function() {
+        this.appendDummyInput()
+            .appendField("Apply State Change");
+        this.setPreviousStatement(true, null);
+        this.setColour(0);
+        this.setTooltip("This tells the server to apply the state change");
+      }
+    };
+
+    javascriptGenerator.forBlock['apply_state_change'] = function(block, generator) {
+      var code = 'applyStateChange();\n';
+      return code;
+    };
+
     Object.keys(blocklyData.irCodes).forEach((key) => {
       Blockly.Blocks[`IR_${key}`] = {
         init: function() {
@@ -288,6 +303,7 @@
       <block v-for="key in Object.keys(blocksValue.irCodes)" :type="`IR_${key}`"></block>
     </category>
     <category name="State" colour="270">
+      <block type="apply_state_change"></block>
       <block v-for="key in Object.keys(blocksValue.states)" :type="`State_${key}`"></block>
     </category>
     <category name="Const" colour="150">

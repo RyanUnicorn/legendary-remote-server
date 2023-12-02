@@ -24,7 +24,7 @@ model Board {
 // device in HomeAssistant
 model Device {
   // board - relation = device
-  board   Board?  @relation(fields: [boardId], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  board   Board?  @relation(fields: [boardId], references: [id], onUpdate: SetNull, onDelete: SetNull)
   boardId String?
 
   id               Int     @id @default(autoincrement())
