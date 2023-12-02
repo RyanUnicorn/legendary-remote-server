@@ -5,9 +5,10 @@
     import { ref, onMounted, shallowRef } from 'vue';
     import { globals } from '../main';
     import axios from 'axios';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
 
     const route = useRoute();
+    const router = useRouter();
     const currentId = route.params.id;
     const blocklyValue = ref([]);
     const blocklyDiv = ref(null);
@@ -84,6 +85,10 @@
         }
     }
 
+    function backToDevice(){
+        router.push(`/devices/${currentId}`);
+    }
+
     function showAndHidePopup(bool) {
         if(bool){
             showSuccessPopup.value = true;
@@ -114,6 +119,7 @@
     <ToolBox :deviceId="currentId"/>
     <div class="blocklyArea">
         <div ref="blocklyDiv" class="neu-box" style="height: 100%; width: 100%;"/>
+        <div @click="backToDevice" class="back-btn">&lt; Back</div> 
         <div @click="saveWorkspace" class="neu-box save-btn">Save</div>
         <transition name="fade">
             <div v-if="showSuccessPopup" class="successPopUp">
@@ -133,6 +139,27 @@
         width: 100%;
         height: 100%;
         position: relative;
+    }
+
+    .back-btn {
+        height: 30px;
+        width: 100px;
+        min-width: 70px;
+        min-height: 20px;
+
+        position: absolute;
+        top: 12px;
+        left: 0px;
+
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--color-accent);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
     }
 
     .save-btn{
@@ -156,7 +183,8 @@
     }
 
     .blocklyToolboxDiv {
-        padding-top: 24px;
+        padding-top: 12px;
+        top: 48px;
         border-radius: var(--border-radius);
         background-color: var(--color-background);
     }
