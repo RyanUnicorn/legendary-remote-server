@@ -41,6 +41,19 @@
     }
   }
 
+  async function handleIRSendIntervalChange(irSendInterval) {
+    if(device.value.irSendInterval != irSendInterval){
+      try {
+        await axios.put(`${globals.$origin}/api/devices/${currentId}`, {
+          irSendInterval: irSendInterval,
+        });
+      } catch(err) {
+        console.error(err);
+      }
+    }
+    fetchDevice();
+  }
+
   async function handlSavingNewIRCode( boardId, receiveRawdata, receiveCode){
     
     try {
@@ -293,11 +306,13 @@
         <DeviceIRCodes
           :IRCodes = "device.irCodes"
           :boardId = "device.boardId"
+          :irSendInterval = "device.irSendInterval"
           @rename="handleIRCodeRename"
           @redescribe="handleIRCodeRedescribe"
           @delete="handleIRCodeDelete"
           @saveInfoIRCode="handleSavingInfoIRCode"
           @saveNewIRCode="handlSavingNewIRCode"
+          @irSendIntervalChange="handleIRSendIntervalChange"
         />
     </div>
   </div>
