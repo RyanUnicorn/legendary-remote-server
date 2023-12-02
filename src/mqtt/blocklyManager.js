@@ -218,7 +218,9 @@ function haCreateInterpreterFunctions({
     const getTargetState = (stateKey) => targetStates[stateKey];
     const getConst = (constKey) => consts[constKey];
     const queueIrCode = (irCodeKey) => {
-        irCodeToSend.push(Object.assign({}, irCodes[irCodeKey])); // Object.assign to avoid pass by refrence
+        if(irCodeKey != '') {
+            irCodeToSend.push(Object.assign({}, irCodes[irCodeKey])); // Object.assign to avoid pass by refrence
+        }
     }
 
     return { getOriginalState, getTargetState, getConst, queueIrCode };
