@@ -7,7 +7,16 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => {
+            const blocklyComp = ['block', 'category', 'field', 'shadow', 'value', 'sep', 'xml'];
+            return (blocklyComp.indexOf(tag) > -1);
+          }
+        }
+      }
+    }),
     vueJsx(),
   ],
   resolve: {
