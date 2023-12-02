@@ -46,8 +46,8 @@
     }
 
     javascriptGenerator.forBlock['send_ir_code'] = function(block, generator) {
-      var value_ir_code = generator.valueToCode(block, 'IR_CODE', javascript.Order.ATOMIC);
-      var code = '...\n';
+      var value_ir_code = generator.valueToCode(block, 'IR_CODE', Order.ATOMIC);
+      var code = `queueIrCode(${value_ir_code? value_ir_code : '""'});\n`;
       return code;
     };
 
@@ -63,8 +63,8 @@
       };
 
       javascriptGenerator.forBlock[`IR_${key}`] = function(block, generator) {
-        var code = '...';
-        return [code, Blockly.javascript.ORDER_NONE];
+        var code = `"${key}"`;
+        return [code, Order.ATOMIC];
       };
     });
 
@@ -81,8 +81,13 @@
 
       javascriptGenerator.forBlock[`State_${key}`] = function(block, generator) {
         var dropdown_type = block.getFieldValue('TYPE');
-        var code = '...';
-        return [code, Blockly.javascript.ORDER_NONE];
+        var code = '';
+        if(dropdown_type == 'ORI') {
+          code = `getOriginalState("${key}")`;
+        } else {
+          code = `getTargetState("${key}")`;
+        }
+        return [code, Order.ATOMIC];
       };
     });
 
@@ -104,8 +109,8 @@
 
         javascriptGenerator.forBlock[`Const_${key}`] = function(block, generator) {
           var dropdown_option = block.getFieldValue('OPTION');
-          var code = '...';
-          return [code, Blockly.javascript.ORDER_NONE];
+          var code = `"${dropdown_option}"`;
+          return [code, Order.ATOMIC];
         };
       } else {
         Blockly.Blocks[`Const_${key}`] = {
@@ -118,8 +123,8 @@
         };
 
         javascriptGenerator.forBlock[`Const_${key}`] = function(block, generator) {
-          var code = '...';
-          return [code, Blockly.javascript.ORDER_NONE];
+          var code = `getConst("${key}")`;
+          return [code, Order.ATOMIC];
         };
       }
     });
