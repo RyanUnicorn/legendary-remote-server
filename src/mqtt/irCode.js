@@ -8,7 +8,7 @@ const IR_SENDRAW = 'sendraw';
 const IR_SENT = 'sent';
 
 const QUEUE = {
-    interval: 150,
+    defaultInterval: 50,
     timeout: 250,
     retries: 3,
 }
@@ -61,7 +61,7 @@ async function loop(boardId) {
         const result = await Promise.race([timeout, sent])
         irCode.sent(result);
         mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
-        await delay(QUEUE.interval);
+        await delay(irCode.irSendInterval);
     } catch (error) {
         irCode.failed(error);
     }
@@ -98,6 +98,15 @@ function setBoardHandler(boardId) {
      * `sent` reply
      */
 async function sendRaw({boardId, irCode}) {
+    /**
+     * Check if the irCode has property 'irSendInterval' if not
+     * set it to the default value, this avoid problems if an 
+     * irCode has no 'irSendInterval' (like when irCode service
+     * wants to send a raw data from the frontend)
+     */
+    if(irCode.irSendInterval == undefined) {
+        irCode.irSendInterval = QUEUE.defaultInterval;
+    }
     return new Promise(async (resolve, reject) => {
         // insert into sending queue
         Object.assign(irCode, {

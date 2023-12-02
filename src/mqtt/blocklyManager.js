@@ -165,6 +165,7 @@ async function getAllIrCode(deviceId) {
             blockDescription: _.description,
             rawData: JSON.parse(_.rawData),
             code: _.code,
+            irSendInterval: device.irSendInterval, // get the device's ir send interval
         };
     });
 
