@@ -79,6 +79,9 @@ module.exports = {
         return await prisma.entity.delete({
             where: {
                 id: _id
+            },
+            include: {
+                device: true,
             }
         });
     }

@@ -362,7 +362,9 @@ function createHaCallBack(deviceId, stateKey) {
         if(shouldApplyStateChange) {
             haApplyStateChange(device, stateKey, targetStates[stateKey]);
         }
-        
+
+        haNoStateChange(device, stateKey, originalStates[stateKey]);
+
         unlockState(stateKey);
     }
 }

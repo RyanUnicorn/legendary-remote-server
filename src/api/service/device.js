@@ -18,7 +18,6 @@ module.exports = {
         device = await model.updateDevice(device);
 
         device.entities.forEach((_entity) => {
-            homeAssistant.deleteEntity(_entity);
             homeAssistant.configHAEntity(_entity);
         });
 

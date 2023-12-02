@@ -1,4 +1,4 @@
-const { entity: model } = require('../model');
+const { entity: model, device: {updateDevice} } = require('../model');
 const { homeAssistant } = require('../../mqtt');
 
 module.exports = {
@@ -41,6 +41,12 @@ module.exports = {
         const _entity = await model.deleteEntity(entity);
 
         homeAssistant.deleteEntity(_entity);
+
+        const device = {
+            id: _entity.deviceId,
+            blocklyJS: '',
+        }
+        await updateDevice(device);
 
         return _entity;
     },

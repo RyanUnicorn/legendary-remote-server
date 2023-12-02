@@ -1,6 +1,6 @@
 const { Prisma } = require('@prisma/client');
 const { board: model } = require('../model');
-const { board: mqtt } = require('../../mqtt');
+const { board: mqtt, irCode: { setBoardHandler } } = require('../../mqtt');
 
 module.exports = {
     listBoards: async () => {
@@ -37,7 +37,9 @@ module.exports = {
          * `The board is already paired.`
          */
         try {
-            return await model.addBoard({id: _id, name: _name});
+            const _board = await model.addBoard({id: _id, name: _name});
+            setBoardHandler(_board.id);
+            return _board;
         } catch (err) {
                 // Check if the error type is same as unique key
                 // constriant's error.

@@ -10,7 +10,7 @@ const apiRouter = require('./api/router');
 
 const wss = require('./api/ws');
 
-const { homeAssistant } = require('./mqtt');
+const { homeAssistant, irCode } = require('./mqtt');
 
 require('dotenv').config({path: '../.env'});
 
@@ -37,6 +37,7 @@ router.use('/ircodes', apiRouter.irCode);
 router.use('/blockly', apiRouter.blockly);
 
 homeAssistant.init();
+irCode.init();
 
 /**
  * TODO: split dev server & release server

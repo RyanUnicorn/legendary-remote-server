@@ -120,21 +120,8 @@ async function sendRawList(boardId, irCodes) {
     return await Promise.all(sendList);
 }
 
-(async () => {
-    await init();
-    // let irCodes = [];
-    // const irCode = {
-    //     "boardId": "24D7EBCCCEC1",
-    //     "code": "0x1E7040BF",
-    //     "rawData": [9002,4562,524,594,544,610,526,612,502,1728,546,1708,544,1726,524,1728,548,610,502,614,524,1730,522,1728,548,1706,546,592,546,608,506,614,548,586,528,610,502,1728,548,592,522,614,526,590,546,592,522,594,544,590,546,1708,544,592,546,1708,544,1730,522,1728,548,1708,544,1728,522,1728,548,41280,9002,2290,544]
-    // };
-    // for (let index = 0; index < 10; index++) {        
-    //     irCodes.push(irCode);
-    // }
-    // sendRawList('24D7EBCCCEC1', irCodes);
-})();
-
 module.exports = {
+    init,
     /**
      * Receive an IR code.
      * Timeout 10 seconds.
@@ -166,40 +153,8 @@ module.exports = {
             });
     }),
 
-    // /**
-    //  * Send an IR raw data.
-    //  * Timeout 1.5 seconds.
-    //  * @returns a Promise that resolve on board's
-    //  * `sent` reply
-    //  */
-    // sendRaw: async ({boardId, irCode}) => new Promise((resolve, reject) => {
-    //     const payload = JSON.stringify(irCode);
-    //     client.publish(`${IR_PREFIX}/${boardId}/${IR_SENDRAW}`, payload);
-
-    //     const timeout = new Promise((resolve, reject) => {
-    //         setTimeout(reject, client.BOARD_INTERVAL, 'timeout');
-    //     });
-
-    //     const sent = new Promise((resolve, reject) => {
-    //         mqtt.route(`${IR_PREFIX}/${boardId}/${IR_SENT}`, (topic, message) => {
-    //             message = JSON.parse(message.toString());
-    //             if (message.code == irCode.code) {
-    //                 resolve(message);
-    //             }
-    //         });
-    //     });
-
-    //     // race and see which is faster, sent or timeout.
-    //     Promise.race([timeout, sent])
-    //         .then(resolve)
-    //         .catch(reject)
-    //         // default ruroute and let the board stop dumping.
-    //         .finally(() => {
-    //             mqtt.unroute(`${IR_PREFIX}/${boardId}/${IR_SENT}`);
-    //         });
-    // }),
-
     sendRaw,
     sendRawList,
+    setBoardHandler,
 };
 
