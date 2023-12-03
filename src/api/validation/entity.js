@@ -89,7 +89,7 @@ module.exports = {
             select: subtype.select.when('type', entitySubtype('select')),
             button: subtype.button.when('type', entitySubtype('button')),
             number: subtype.number.when('type', entitySubtype('number')),
-            fan: subtype.number.when('type', entitySubtype('fan')),
+            fan: subtype.fan.when('type', entitySubtype('fan')),
         }),
     },
 }

@@ -5,6 +5,7 @@ const ENTITY_TYPES = {
     select: true,
     button: true,
     number: true,
+    fan: true,
 };
 
 
