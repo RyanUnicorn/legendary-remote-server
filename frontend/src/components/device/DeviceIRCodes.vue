@@ -54,7 +54,7 @@
     <div class="container">
       <DeviceIRCodesInfoCard v-for="IRCode in IRCodes" :key="IRCodes.id"
         :IRCodedata="IRCode"
-        :boardId="props.boardId"
+        :boardId="boardId"
         @rename = "(id, name) => $emit('rename', id, name)"
         @redescribe = "(id, description) => $emit('redescribe', id, description)"
         @delete = "(id) => $emit('delete', id)"
@@ -63,7 +63,7 @@
       <DeviceIRCodesAddingCard @click="addingIRCode"/>
       <PopUp 
         :isModalOpen = "isPopUp"
-        :boardId="props.boardId"
+        :boardId="boardId"
         @close="popUPswitch"
         @saveIRCode="(boardId, receiveRawdata, receiveCode) => $emit('saveNewIRCode', boardId, receiveRawdata, receiveCode)"
       />

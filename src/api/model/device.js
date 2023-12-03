@@ -1,3 +1,4 @@
+const { json } = require('express');
 const prisma = require('./client');
 const { ENTITY_TYPES } = require('./entity');
 
@@ -56,6 +57,10 @@ module.exports = {
             },
         });
 
+        _device.irCodes.forEach((irCode)=>{
+            irCode.rawData = JSON.parse(irCode.rawData);
+        });
+        
         return _device;
     },
 

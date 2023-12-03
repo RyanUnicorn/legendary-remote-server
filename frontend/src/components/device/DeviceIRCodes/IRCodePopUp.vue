@@ -40,9 +40,6 @@
       receiveCode.value = result.data.code;
       receiveRawdata.value = result.data.rawData;
       isReceive.value = !isReceive.value;
-      console.log(result.status);
-      console.log(receiveCode.value);
-      console.log(receiveRawdata.value);
     } catch(err) {
       console.error(err);
     }
@@ -50,7 +47,6 @@
   }
 
   async function replayRawdata(){
-    //api send receiveRawdata
     try {
       await axios.put(`${globals.$origin}/api/ircodes/send`, {
         code: receiveCode.value,
