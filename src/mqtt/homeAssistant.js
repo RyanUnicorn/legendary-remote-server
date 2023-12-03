@@ -18,9 +18,6 @@ function discoveryPayload(entity) {
     // an alias that shorten the code
     const _ = entity;
 
-    /**
-     * TODO Change here if support for Fan, Light, AC is needed
-     */
     // output entity
     let _entity = {
         name: _.name,
@@ -179,11 +176,10 @@ const publishEntity = (entity) => {
  */
 const configHAEntity = async (entity) => {
     publishEntity(entity);
-    // TODO: should support FAN, HVAC...
     
-    // Publish entity's state.
+    // * Publish entity's state.
     const entityStates = await getAllStateByEntityId(entity.device.id, entity.id);
-
+    // for every state of that entity, we publish
     Object.keys(entityStates).forEach((key) => {
         const state = JSON.stringify(entityStates[key].state);
         client.publish(TOPIC.stateFromState(entity.device.id, key), state, { retain: true });

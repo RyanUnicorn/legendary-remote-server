@@ -344,7 +344,6 @@ function unlockState(stateKey) {
 
 function createHaCallBack(deviceId, stateKey) {
     return async (topic, message) => {
-        // TODO implement state lock
         if(stateIsLocked(stateKey)) {
             return;
         }
