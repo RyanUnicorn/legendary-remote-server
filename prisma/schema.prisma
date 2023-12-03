@@ -54,6 +54,7 @@ model Entity {
   select Select?
   button Button?
   number Number?
+  fan    Fan?
 }
 
 model IrCode {
@@ -100,6 +101,24 @@ model Number {
   isSlider Boolean?
 }
 
+model Fan {
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  entityId Int    @id
+
+  state            Boolean @default(false)
+  directionState   String  @default("forward")
+  oscillationState Boolean @default(false)
+  percentageState  Int     @default(0)
+  presetModeState  String  @default("")
+
+  enableDirection   Boolean @default(false)
+  enableOscillation Boolean @default(false)
+  enablePercentage  Boolean @default(false)
+  enablePresetMode  Boolean @default(false)
+
+  speedRangeMax Int    @default(100)
+  presetModes   String @default("[]")
+}
+
 // model ac {}
-// model fan {}
 // model light {}
