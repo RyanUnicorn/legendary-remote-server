@@ -108,7 +108,7 @@ model Fan {
   state            Boolean @default(false)
   directionState   String  @default("forward")
   oscillationState Boolean @default(false)
-  percentageState  Int     @default(0)
+  percentageState  Int     @default(1)
   presetModeState  String  @default("")
 
   enableDirection   Boolean @default(false)
