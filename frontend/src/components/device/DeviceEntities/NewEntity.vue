@@ -3,6 +3,7 @@
   import EditableTextInline from '../../shared/EditableTextInline.vue';
   import NumberSetting from './NumberSetting.vue';
   import SelectSetting from './SelectSetting.vue';
+  import FanSetting from './FanSetting.vue';
 
   const emit = defineEmits([
     'cancel', // cancel()
@@ -10,6 +11,7 @@
     'newSelect', // newSelect(entityName, {options:[...]})
     'newButton', // newButton(entityName)
     'newSwitch', // newSwitch(entityName)
+    'newFan',    // newFan(entityName, {flags..., consts...})
   ]);
 
   const entityType = ref('switch');
@@ -28,6 +30,22 @@
       'option3',
     ],
   });
+  const fanSettings = ref({
+    enableDirection: false,
+    enableOscillation: false,
+    enablePercentage: false,
+    enablePresetMode: false,
+    speedRangeMax: 100,
+    presetModes: [
+      'Normal',
+      'Eco',
+      'Turbo',
+    ],
+  });
+
+  // setInterval(() => {
+  //   console.log(fanSettings.value);
+  // }, 1000);
 
   function newNumber() {
     emit('newNumber', entityName.value, numberSettings.value);
@@ -45,6 +63,25 @@
     emit('newSwitch', entityName.value);
   }
 
+  function newFan() {
+    const fanSettingSanitized = {
+      enableDirection: fanSettings.value.enableDirection,
+      enableOscillation: fanSettings.value.enableOscillation,
+      enablePercentage: fanSettings.value.enablePercentage,
+      enablePresetMode: fanSettings.value.enablePresetMode,
+    };
+    
+    if(fanSettings.value.enablePercentage) {
+      fanSettingSanitized.speedRangeMax = fanSettings.value.speedRangeMax;
+    }
+
+    if(fanSettings.value.enablePresetMode) {
+      fanSettingSanitized.presetModes = fanSettings.value.presetModes;
+    }
+
+    emit('newFan', entityName.value, fanSettingSanitized);
+  }
+
   function handleCreateEntity() {
     switch(entityType.value) {
       case 'number':
@@ -58,6 +95,9 @@
         break;
       case 'switch':
         newSwitch();
+        break;
+      case 'fan':
+        newFan();
         break;
     }
   }
@@ -82,6 +122,7 @@
             <option value="number">Number</option>
             <option value="select">Select</option>
             <option value="button">Button</option>
+            <option value="fan">Fan</option>
           </select>
         </div>
       </div>
@@ -94,6 +135,10 @@
         <SelectSetting
           v-if="entityType == 'select'"
           v-model="selectSettings"
+        />
+        <FanSetting
+          v-if="entityType == 'fan'"
+          v-model="fanSettings"
         />
         <div v-if="entityType == 'switch' || entityType == 'button'"
           style="display: flex; justify-content: center; color: var(--color-text-mute); font-size: 2rem; padding-top: 5rem;"

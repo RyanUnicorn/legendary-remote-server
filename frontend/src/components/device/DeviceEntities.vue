@@ -10,6 +10,7 @@
     'newSelect', // newSelect(entityName, {options:[...]})
     'newButton', // newButton(entityName)
     'newSwitch', // newSwitch(entityName)
+    'newFan',    // newFan(entityName, {flags..., consts...})
   ]);
 
   const props = defineProps({
@@ -44,6 +45,7 @@
       @new-select="(entityName, settings) => { $emit('newSelect', entityName, settings); listing = true; }"
       @new-button="(entityName) => { $emit('newButton', entityName); listing = true; }"
       @new-switch="(entityName) => { $emit('newSwitch', entityName); listing = true; }"
+      @new-fan = "(entityName, settings) => { $emit('newFan', entityName, settings); listing = true; }"
     />
   </div>
 </template>

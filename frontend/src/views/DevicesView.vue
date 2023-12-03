@@ -275,6 +275,33 @@
     fetchDevice();
   }
 
+  async function handleNewFan(entityName, options) {
+    console.log('new fan', entityName, options);
+    /**
+     * * POST /api/entities
+     */
+    
+    const reqEntity = {
+      deviceId: currentId,
+      name: entityName,
+      type: 'fan',
+      fan: {
+        ...options,
+      },
+    };
+    if(reqEntity.fan.enablePresetMode) {
+      reqEntity.fan.presetModeState = reqEntity.fan.presetModes[0];
+    }
+
+    try {
+      await axios.post(`${globals.$origin}/api/entities`, reqEntity);
+    } catch(err) {
+      console.error(err);
+    }
+
+    fetchDevice();
+  }
+
   onMounted(() => {
     fetchDevice();
     fetchBoardList();
@@ -299,6 +326,7 @@
           @new-select="handleNewSelect"
           @new-button="handleNewButton"
           @new-switch="handleNewSwitch"
+          @new-fan="handleNewFan"
         />
     </div>
     <div class="right">
