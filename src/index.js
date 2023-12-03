@@ -36,6 +36,12 @@ router.use('/entities', apiRouter.entity);
 router.use('/ircodes', apiRouter.irCode);
 router.use('/blockly', apiRouter.blockly);
 
+// server the built front end
+app.use(express.static('./public'));
+app.get('*', (req, res) => {
+    res.sendFile('./public/index.html');
+});
+
 homeAssistant.init();
 irCode.init();
 
