@@ -2,7 +2,7 @@ const { TOPIC, client, ...mqtt } = require('./client');
 const { sendRaw } = require('./irCode');
 const { irCode: model, entity: {listEntities}, device: {listDevices} } = require('../api/model');
 const { device } = require('../api/validation');
-const { getAllState, createHaCallBack } = require('./blocklyManager');
+const { getAllState, getAllStateByEntityId, createHaCallBack } = require('./blocklyManager');
 
 /**
  * Convert the the entity of our server into
@@ -91,7 +91,6 @@ function discoveryPayload(entity) {
             additionalKeys = {
                 payload_off: 'false',
                 payload_on: 'true',
-                preset_modes: JSON.parse(_.fan.presetModes),
             };
 
             if (_.fan.enableDirection) {
@@ -122,8 +121,9 @@ function discoveryPayload(entity) {
 
             if (_.fan.enablePresetMode) {
                 Object.assign(additionalKeys, {
-                    preset_mode_command_topic: `${TOPIC.state(_)}/preset_mode`,
-                    preset_mode_state_topic: `${TOPIC.state(_)}/preset_mode`,
+                    preset_mode_command_topic: `${TOPIC.command(_)}/presetMode`,
+                    preset_mode_state_topic: `${TOPIC.state(_)}/presetMode`,
+                    preset_modes: JSON.parse(_.fan.presetModes),
                 });
             }
 
@@ -177,16 +177,17 @@ const publishEntity = (entity) => {
  * then subscribe to it's command topics.
  * @param {*} entity 
  */
-const configHAEntity = (entity) => {
+const configHAEntity = async (entity) => {
     publishEntity(entity);
     // TODO: should support FAN, HVAC...
     
     // Publish entity's state.
-    const state = JSON.stringify(entity[entity.type].state);
-    client.publish(TOPIC.state(entity), state, { retain: true });
+    const entityStates = await getAllStateByEntityId(entity.device.id, entity.id);
 
-    // const cmndTopic = TOPIC.command(entity);
-    // routeCmndTopic(cmndTopic);
+    Object.keys(entityStates).forEach((key) => {
+        const state = JSON.stringify(entityStates[key].state);
+        client.publish(TOPIC.stateFromState(entity.device.id, key), state, { retain: true });
+    });
 };
 
 const initHAEntities = async () => {

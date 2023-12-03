@@ -16,98 +16,104 @@ async function getAllState(deviceId) {
 
     const device = await getDevice({ id: deviceId });
     const entities = device.entities;
+
     entities.forEach((_) => {
-        let subType;
-        // assign button's default state as false
+        let subType = _[_.type];
         switch(_.type) {
             case 'button':
-                subType = _[_.type];
-                subType.state = false;
-                break;
-            default:
-                subType = _[_.type];
-                break;
+                allState[`${_.id}`] = {
+                    blockName: _.name,
+                    state: false,
+                    type: typeof(false),
+                    entityId: _.id,
+                    statePrefix: '',
+                    entityType: _.type,
+                };
+            break;
+            case 'switch':
+                allState[`${_.id}`] = {
+                    blockName: _.name,
+                    state: subType.state,
+                    type: typeof(subType.state),
+                    entityId: _.id,
+                    statePrefix: '',
+                    entityType: _.type,
+                };
+            break;
+            case 'select':
+                allState[`${_.id}`] = {
+                    blockName: _.name,
+                    state: subType.state,
+                    type: typeof(subType.state),
+                    entityId: _.id,
+                    statePrefix: '',
+                    entityType: _.type,
+                };
+            break;
+            case 'number':
+                allState[`${_.id}`] = {
+                    blockName: _.name,
+                    state: subType.state,
+                    type: typeof(subType.state),
+                    entityId: _.id,
+                    statePrefix: '',
+                    entityType: _.type,
+                };
+            break;
+            case 'fan':
+                allState[`${_.id}`] = {
+                    blockName: _.name,
+                    state: subType.state,
+                    type: typeof(subType.state),
+                    entityId: _.id,
+                    statePrefix: '',
+                    entityType: _.type,
+                }
+                if(_.fan.enableDirection) {
+                    allState[`${_.id}/direction`] = {
+                        blockName: `${_.name} >> direction`,
+                        state: _.fan.directionState,
+                        type: typeof(_.fan.directionState),
+                        entityId: _.id,
+                        statePrefix: 'direction',
+                        entityType: _.type,
+                    };
+                }
+                if(_.fan.enableOscillation) {
+                    allState[`${_.id}/oscillation`] = {
+                        blockName: `${_.name} >> oscillation`,
+                        state: _.fan.oscillationState,
+                        type: typeof(_.fan.oscillationState),
+                        entityId: _.id,
+                        statePrefix: 'oscillation',
+                        entityType: _.type,
+                    };
+                }
+                if(_.fan.enablePercentage) {
+                    allState[`${_.id}/percentage`] = {
+                        blockName: `${_.name} >> speed`,
+                        state: _.fan.percentageState,
+                        type: typeof(_.fan.percentageState),
+                        entityId: _.id,
+                        statePrefix: 'percentage',
+                        entityType: _.type,
+                    };
+                }
+                if(_.fan.enablePresetMode) {
+                    allState[`${_.id}/presetMode`] = {
+                        blockName: `${_.name} >> preset mode`,
+                        state: _.fan.presetModeState,
+                        type: typeof(_.fan.presetModeState),
+                        entityId: _.id,
+                        statePrefix: 'presetMode',
+                        entityType: _.type,
+                    };
+                }
         }
-        const stateRuleRegex = /(^\w*)[sS]tate$/;
-        
-        /**
-         *  filter out the subtype's content by its keys, the filtered object
-         *  will contains only the keys that maches the above regex (ends with state)
-         * 
-         *  TLDR: It filter the subtype with only the state left
-         */
-        const entityStates = Object.keys(subType)
-        .filter((key) => stateRuleRegex.test(key))
-        .reduce((obj, key) => {
-            // append(assign) the object with the filtered key and its value
-            obj[key] = subType[key];
-            
-            // return the accumulator object
-            return obj;
-        }, {});
-
-        Object.keys(entityStates).forEach((key) => {
-            // get the states name (if any) using the capturing group of the above regex
-            const stateName = key.match(stateRuleRegex)[1];
-            const statePath = (stateName == '') ? '' : `/${stateName}`;
-
-            // the id would be like `<entityId>[/<stateName>]`
-            allState[`${_.id}${statePath}`] = {
-                blockName: _.name + ((stateName == '')? '' : ' >> ') + stateName,
-                state: entityStates[key],
-                type: typeof(entityStates[key]),
-                entityId: _.id,
-                statePrefix: stateName,
-                entityType: _.type,
-            }
-        });
     });
 
     return allState;
 }
-
-// async function getAllStateAlt(deviceId) {
-//     const allState = {};
-
-//     const device = await getDevice({ id: deviceId });
-//     const entities = device.entities;
-
-//     entities.forEach((_) => {
-//         let subType = _[_.type];
-//         switch(_.type) {
-//             case 'button':
-//                 allState[`${_.id}`] = {
-//                     blockName: _.name,
-//                     state: false,
-//                     type: typeof(false),
-//                 }
-//             break;
-//             case 'switch':
-//                 allState[`${_.id}`] = {
-//                     blockName: _.name,
-//                     state: subType.state,
-//                     type: typeof(subType.state),
-//                 }
-//             break;
-//             case 'select':
-//                 allState[`${_.id}`] = {
-//                     blockName: _.name,
-//                     state: subType.state,
-//                     type: typeof(subType.state),
-//                 }
-//             break;
-//             case 'number':
-//                 allState[`${_.id}`] = {
-//                     blockName: _.name,
-//                     state: subType.state,
-//                     type: typeof(subType.state),
-//                 }
-//             break;
-//         }
-//     });
-
-//     return allState;
-// }
 
 async function getAllConst(deviceId) {
     const allConst = {};
@@ -173,7 +179,7 @@ async function getAllConst(deviceId) {
                         type: typeof(subType.speedRangeMax),
                     }
                 }
-                if (subType.presetModes) {
+                if (subType.enablePresetMode) {
                     allConst[`${_.id}/presetModes`] = {
                         blockName: `${_.name} >> presetModes`,
                         const: JSON.parse(subType.presetModes),
@@ -403,9 +409,21 @@ function createHaCallBack(deviceId, stateKey) {
     }
 }
 
+async function getAllStateByEntityId(deviceId, entityId) {
+    const states = await getAllState(deviceId);
+    return Object.keys(states).reduce((entityStates, key) => {
+        // console.log('WOW', states[key].entityId, entityId);
+        if(states[key].entityId == entityId) {
+            entityStates[key] = states[key];
+        }
+        return entityStates;
+    }, {});
+}
+
 module.exports = {
     getAllState,
     getAllConst,
     getAllIrCode,
     createHaCallBack,
+    getAllStateByEntityId,
 }
