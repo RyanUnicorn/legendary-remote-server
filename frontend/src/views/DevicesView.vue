@@ -124,7 +124,7 @@
       console.error(err);
     }
 
-    fetchDevice();
+    window.location.reload();
 
   }
 
@@ -184,7 +184,7 @@
     } catch(err) {
       console.error(err);
     }
-    fetchDevice();
+    window.location.reload();
   }
 
   async function handleNewNumber(entityName, options) {
