@@ -87,6 +87,45 @@ function discoveryPayload(entity) {
 
             break;
 
+        case 'fan':
+            additionalKeys = {
+                speed_range_min: 1,
+                speed_range_max: _.fan.speedRangeMax,
+
+            };
+
+            if (_.fan.enableDirection) {
+                Object.assign(additionalKeys, {
+                    direction_command_topic: `${TOPIC.state(_)}/direction`,
+                    direction_state_topic: `${TOPIC.state(_)}/direction`,
+                });
+            }
+
+            if (_.fan.enableOscillation) {
+                Object.assign(additionalKeys, {
+                    oscillation_command_topic: `${TOPIC.state(_)}/oscillation`,
+                    oscillation_state_topic: `${TOPIC.state(_)}/oscillation`,
+                    payload_oscillation_off: `false`,
+                    payload_oscillation_on: `true`,
+                });
+            }
+
+            if (_.fan.enablePercentage) {
+                Object.assign(additionalKeys, {
+                    percentage_command_topic: `${TOPIC.state(_)}/percentage`,
+                    percentage_state_topic: `${TOPIC.state(_)}/percentage`,
+                });
+            }
+
+            if (_.fan.enablePresetMode) {
+                Object.assign(additionalKeys, {
+                    preset_mode_command_topic: `${TOPIC.state(_)}/preset_mode`,
+                    preset_mode_state_topic: `${TOPIC.state(_)}/preset_mode`,
+                });
+            }
+
+            break;
+
         default:
             break;
     }

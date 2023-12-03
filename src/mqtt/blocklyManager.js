@@ -148,6 +148,15 @@ async function getAllConst(deviceId) {
                     type: typeof(subType.step),
                 }
             break;
+            case 'fan':
+                if (subType.enablePercentage) {
+                    allConst[`${_.id}/speedRangeMax`] = {
+                        blockName: `${_.name} >> speedRangeMax`,
+                        const: subType.step,
+                        type: typeof(subType.step),
+                    }
+                }
+            break;
         }
     });
 
