@@ -149,11 +149,35 @@ async function getAllConst(deviceId) {
                 }
             break;
             case 'fan':
+                if (subType.enableDirection) {
+                    allConst[`${_.id}/direction/forward`] = {
+                        blockName: `${_.name} >> direction <forward>`,
+                        const: 'forward',
+                        type: 'string',
+                    }
+                    allConst[`${_.id}/direction/reverse`] = {
+                        blockName: `${_.name} >> direction <reverse>`,
+                        const: 'reverse',
+                        type: 'string',
+                    }
+                }
                 if (subType.enablePercentage) {
+                    allConst[`${_.id}/speedRangeMin`] = {
+                        blockName: `${_.name} >> speedRangeMin`,
+                        const: 1,
+                        type: 'number',
+                    }
                     allConst[`${_.id}/speedRangeMax`] = {
                         blockName: `${_.name} >> speedRangeMax`,
-                        const: subType.step,
-                        type: typeof(subType.step),
+                        const: subType.speedRangeMax,
+                        type: typeof(subType.speedRangeMax),
+                    }
+                }
+                if (subType.presetModes) {
+                    allConst[`${_.id}/presetModes`] = {
+                        blockName: `${_.name} >> presetModes`,
+                        const: JSON.parse(subType.presetModes),
+                        type: 'array',
                     }
                 }
             break;

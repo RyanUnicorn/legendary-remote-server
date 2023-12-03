@@ -89,21 +89,21 @@ function discoveryPayload(entity) {
 
         case 'fan':
             additionalKeys = {
-                speed_range_min: 1,
-                speed_range_max: _.fan.speedRangeMax,
-
+                payload_off: 'false',
+                payload_on: 'true',
+                preset_modes: JSON.parse(_.fan.presetModes),
             };
 
             if (_.fan.enableDirection) {
                 Object.assign(additionalKeys, {
-                    direction_command_topic: `${TOPIC.state(_)}/direction`,
+                    direction_command_topic: `${TOPIC.command(_)}/direction`,
                     direction_state_topic: `${TOPIC.state(_)}/direction`,
                 });
             }
 
             if (_.fan.enableOscillation) {
                 Object.assign(additionalKeys, {
-                    oscillation_command_topic: `${TOPIC.state(_)}/oscillation`,
+                    oscillation_command_topic: `${TOPIC.command(_)}/oscillation`,
                     oscillation_state_topic: `${TOPIC.state(_)}/oscillation`,
                     payload_oscillation_off: `false`,
                     payload_oscillation_on: `true`,
@@ -112,8 +112,11 @@ function discoveryPayload(entity) {
 
             if (_.fan.enablePercentage) {
                 Object.assign(additionalKeys, {
-                    percentage_command_topic: `${TOPIC.state(_)}/percentage`,
+                    percentage_command_topic: `${TOPIC.command(_)}/percentage`,
                     percentage_state_topic: `${TOPIC.state(_)}/percentage`,
+
+                    speed_range_min: 1,
+                    speed_range_max: _.fan.speedRangeMax,
                 });
             }
 
