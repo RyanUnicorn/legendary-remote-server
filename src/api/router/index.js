@@ -3,4 +3,5 @@ module.exports = {
     device: require('./device'),
     entity: require('./entity'),
     irCode: require('./irCode'),
+    blockly: require('./blockly'),
 }

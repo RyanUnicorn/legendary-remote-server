@@ -1,3 +1,4 @@
+const { json } = require('express');
 const prisma = require('./client');
 const { ENTITY_TYPES } = require('./entity');
 
@@ -56,6 +57,10 @@ module.exports = {
             },
         });
 
+        _device.irCodes.forEach((irCode)=>{
+            irCode.rawData = JSON.parse(irCode.rawData);
+        });
+        
         return _device;
     },
 
@@ -68,6 +73,9 @@ module.exports = {
                 id: device.id,
             },
             data: device,
+            include: {
+                entities: { include: ENTITY_TYPES },
+            },
         });
 
         return _device;
@@ -80,6 +88,9 @@ module.exports = {
     deleteDevice: async ({id: _id}) => {
         const _device = await prisma.device.delete({
             where: {id: _id},
+            include: {
+                entities: { include: ENTITY_TYPES },
+            },
         });
 
         return _device;

@@ -1,4 +1,5 @@
 const { device: model } = require('../model');
+const { homeAssistant } = require('../../mqtt');
 
 module.exports = {
     listDevices: async () => {
@@ -14,10 +15,22 @@ module.exports = {
     },
 
     updateDevice: async (device) => {
-        return await model.updateDevice(device);
+        device = await model.updateDevice(device);
+
+        device.entities.forEach((_entity) => {
+            homeAssistant.configHAEntity(_entity);
+        });
+
+        return device;
     },
 
     deleteDevice: async (device) => {
-        return await model.deleteDevice(device);
+        device = await model.deleteDevice(device);
+
+        device.entities.forEach((_entity) => {
+            homeAssistant.deleteEntity(_entity);
+        });
+
+        return device;
     },
 };

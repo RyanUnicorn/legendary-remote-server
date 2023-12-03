@@ -1,4 +1,4 @@
-const { object, string, number, boolean, array} = require('yup');
+const { object, string, number, boolean, array, bool} = require('yup');
 
 // entity types' schema
 const subtype = {
@@ -24,6 +24,25 @@ const subtype = {
         min: number().optional(),
         step: number().min(0.001).optional(),
         isSlider: boolean(),
+    }),
+
+    fan: object({
+        entityId: number().positive().integer(),
+        state: boolean(),
+        directionState: string(),
+        oscillationState: boolean(),
+        percentageState: number().integer().min(1),
+        presetModeState: string(),
+
+        enableDirection: boolean(),
+        enableOscillation: boolean(),
+        enablePercentage: boolean(),
+        enablePresetMode: boolean(),
+
+        speedRangeMax: number().integer().min(1),
+        presetModes: array().of(
+            string(),
+        ),
     }),
 }
 
@@ -70,7 +89,7 @@ module.exports = {
             select: subtype.select.when('type', entitySubtype('select')),
             button: subtype.button.when('type', entitySubtype('button')),
             number: subtype.number.when('type', entitySubtype('number')),
-            
+            fan: subtype.fan.when('type', entitySubtype('fan')),
         }),
     },
 }

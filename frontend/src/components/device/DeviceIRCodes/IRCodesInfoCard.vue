@@ -1,5 +1,7 @@
 <script setup>
     import { ref } from 'vue';
+    import axios from 'axios';
+    import { globals } from '../../../main';
     import DropDown from '../../shared/DropDown.vue';
     import EditableText from '../../shared/EditableText.vue';
     import PopUp from './IRCodePopUp.vue';
@@ -38,6 +40,18 @@
         }
     }
 
+    async function sendIRCode(){
+        try {
+        await axios.put(`${globals.$origin}/api/ircodes/send`, {
+            code: props.IRCodedata.code,
+            rawData: props.IRCodedata.rawData,
+            boardId: props.boardId,
+        });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
     function handleEditName(editedName, content) {
         if(editedName) {
             emit('rename', props.IRCodedata.id, content);
@@ -66,6 +80,7 @@
 
 <template>
     <div class="neu-box IRCodesInfoCard">
+        <div @click="sendIRCode" v-if="!(editingDescription || editingName)" class="sendIR"></div>
         <DropDown class="card-dropdown"
             :options="options"
             @selected="handleSelected"
@@ -114,6 +129,39 @@
                         -9px -9px 20px #ffffff;
         }
     }
+
+    .sendIR {
+        padding: var(--spacing-const);
+        position: absolute;
+        display: flex;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 200ms;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &::before {
+            position: absolute;
+            bottom: 11px;
+            background-color: var(--color-background);
+            color: var(--color-accent);
+            width: 90%;
+            font-size: 1rem;
+            content: 'Press to send IRCode.';
+            opacity: 0;
+            transition: opacity 200ms;
+        }
+
+        &:hover::before {
+            opacity: 1;
+        }
+    }
+
 
     .description {
         font-size: 1rem;

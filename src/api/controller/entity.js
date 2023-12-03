@@ -1,10 +1,10 @@
 const { entity: service } = require('../service');
-const { validate: {validate}, entity: {selectOptionParser}, MODE } = require('../middleware');
+const { validate: {validate}, entity: {selectOptionParser, fanPresetModesParser}, MODE } = require('../middleware');
 const { entity } = require('../validation');
 
 module.exports = {
     // middleware: validate entity data
-    createEntity: [validate(entity.schema, MODE.BODY), selectOptionParser,
+    createEntity: [validate(entity.schema, MODE.BODY), selectOptionParser, fanPresetModesParser,
         async (req, res) => {
             try {
                 let entity = req.body;

@@ -10,6 +10,8 @@ const apiRouter = require('./api/router');
 
 const wss = require('./api/ws');
 
+const { homeAssistant, irCode } = require('./mqtt');
+
 require('dotenv').config({path: '../.env'});
 
 // body json parser
@@ -32,6 +34,10 @@ router.use('/boards', apiRouter.board);
 router.use('/devices', apiRouter.device);
 router.use('/entities', apiRouter.entity);
 router.use('/ircodes', apiRouter.irCode);
+router.use('/blockly', apiRouter.blockly);
+
+homeAssistant.init();
+irCode.init();
 
 /**
  * TODO: split dev server & release server
@@ -53,7 +59,7 @@ server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
     });
-})
+});
 
 server.listen(port, () => {
     console.log(`${serverInfo} @ ${scheme}://${host}:${port}`);

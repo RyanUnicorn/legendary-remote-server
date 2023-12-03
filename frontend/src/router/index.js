@@ -29,6 +29,11 @@ const router = createRouter({
       name: 'devicesID',
       component: () => import('../views/DevicesView.vue')
     },
+    {
+      path: '/blockly/:id',
+      name: 'blockly',
+      component: () => import('../views/BlocklyView.vue')
+    },
   ]
 })
 

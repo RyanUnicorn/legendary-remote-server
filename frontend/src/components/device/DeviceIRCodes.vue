@@ -1,20 +1,26 @@
 <script setup>
   import DeviceIRCodesAddingCard from './DeviceIRCodes/IRCodesAddingCard.vue';
   import DeviceIRCodesInfoCard from './DeviceIRCodes/IRCodesInfoCard.vue';
-  import { ref } from 'vue';
+  import { ref, watchEffect } from 'vue';
   import PopUp from './DeviceIRCodes/IRCodePopUp.vue';
   
+  const props = defineProps([
+    'IRCodes',
+    'boardId',
+    'irSendInterval',
+  ]);
 
   const isPopUp = ref(false);
+  const inputInterval = ref('');
+  const inputElement  = ref(null);
+
+  watchEffect(() => {
+    inputInterval.value = props.irSendInterval;
+  });
 
   function popUPswitch(){
     isPopUp.value = !isPopUp.value;
   }
-
-  const props = defineProps([
-    'IRCodes',
-    'boardId',
-  ]);
 
   const emit = defineEmits([
     'rename',
@@ -22,6 +28,7 @@
     'delete',
     'saveNewIRCode',
     'saveInfoIRCode',
+    'irSendIntervalChange',
   ])
 
   function addingIRCode(){
@@ -33,10 +40,21 @@
 <template>
   <div class="neu-box IRCodeFrame">
     <h3>IR Code</h3>
+    <div class="intervalBlock">
+      <h2>Interval</h2>
+      <input
+        v-model="inputInterval"
+        ref="inputElement"
+        class="neu-box interval-input"
+        type="text"
+        @keyup.enter="inputElement.blur()"
+        @blur="$emit('irSendIntervalChange', inputInterval)"
+      />
+    </div>
     <div class="container">
       <DeviceIRCodesInfoCard v-for="IRCode in IRCodes" :key="IRCodes.id"
         :IRCodedata="IRCode"
-        :boardId="props.boardId"
+        :boardId="boardId"
         @rename = "(id, name) => $emit('rename', id, name)"
         @redescribe = "(id, description) => $emit('redescribe', id, description)"
         @delete = "(id) => $emit('delete', id)"
@@ -45,7 +63,7 @@
       <DeviceIRCodesAddingCard @click="addingIRCode"/>
       <PopUp 
         :isModalOpen = "isPopUp"
-        :boardId="props.boardId"
+        :boardId="boardId"
         @close="popUPswitch"
         @saveIRCode="(boardId, receiveRawdata, receiveCode) => $emit('saveNewIRCode', boardId, receiveRawdata, receiveCode)"
       />
@@ -69,6 +87,37 @@
       left: 2rem;
       font-weight: bold;
       font-size: 1.5rem;
+      color: var(--color-text-mute);
+    }
+  }
+
+  .intervalBlock {
+    position: absolute;
+    top: 1.5rem;
+    right: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    & h2{
+      font-size: 1rem;
+      color: var(--color-text-mute);
+    }
+  }
+
+  .interval-input {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 1rem;
+    color: var(--color-accent);
+    background-color: var(--color-background);
+    border: none;
+    outline: none;
+    text-align: center;
+    width: 70px;
+    z-index: 2;
+
+    &::placeholder {
       color: var(--color-text-mute);
     }
   }

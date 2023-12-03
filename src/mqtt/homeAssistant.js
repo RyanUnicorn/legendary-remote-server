@@ -1,33 +1,8 @@
-const { client, ...mqtt } = require('./client');
+const { TOPIC, client, ...mqtt } = require('./client');
 const { sendRaw } = require('./irCode');
-const { irCode: model, entity: {listEntities} } = require('../api/model');
+const { irCode: model, entity: {listEntities}, device: {listDevices} } = require('../api/model');
 const { device } = require('../api/validation');
-
-
-const DISCOVERY_PREFIX = 'homeassistant';
-const DISCOVERY_SUFIX = 'config';
-const ENTITY_PREFIX = 'entity';
-const COMMAN_SUFIX = 'cmnd';
-const STATE_SUFIX = 'state';
-
-/**
- * Home Assistant's MQTT topics builder.
- * See link down below `DISCOVERY MESSAGES`/`Discovery topic` section,
- * or `Entity integrations supported by MQTT discovery` section.
- * @link https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery
- * @returns A topic.
- */
-const TOPIC = {
-    discovery: (entity) => 
-        `${DISCOVERY_PREFIX}/${entity.type}/${entity.id}/${DISCOVERY_SUFIX}`,
-    
-    command: (entity) =>
-        `${ENTITY_PREFIX}/${entity.deviceId}/${entity.id}/${COMMAN_SUFIX}`,
-
-    state: (entity) =>
-        `${ENTITY_PREFIX}/${entity.deviceId}/${entity.id}/${STATE_SUFIX}`,
-
-}
+const { getAllState, getAllStateByEntityId, createHaCallBack } = require('./blocklyManager');
 
 /**
  * Convert the the entity of our server into
@@ -43,6 +18,9 @@ function discoveryPayload(entity) {
     // an alias that shorten the code
     const _ = entity;
 
+    /**
+     * TODO Change here if support for Fan, Light, AC is needed
+     */
     // output entity
     let _entity = {
         name: _.name,
@@ -50,6 +28,7 @@ function discoveryPayload(entity) {
         unique_id: _.id,
         command_topic: TOPIC.command(_),
         state_topic: TOPIC.state(_),
+        optimistic: false,
         // ? Maybe we'll use it someday.
         // availability:
         //     {
@@ -75,8 +54,8 @@ function discoveryPayload(entity) {
     switch (_.type) {
         case 'switch':
             additionalKeys = {
-                payload_on: 'on',
-                payload_off: 'off',
+                payload_on: 'true',
+                payload_off: 'false',
                 state_on: 'true',
                 state_off: 'false',
             };
@@ -93,9 +72,7 @@ function discoveryPayload(entity) {
 
         case 'button':
             additionalKeys = {
-                payload_press: JSON.stringify({
-                    state: 'pressed',
-                }),
+                payload_press: 'true',
             };
 
             break;
@@ -110,6 +87,48 @@ function discoveryPayload(entity) {
 
             break;
 
+        case 'fan':
+            additionalKeys = {
+                payload_off: 'false',
+                payload_on: 'true',
+            };
+
+            if (_.fan.enableDirection) {
+                Object.assign(additionalKeys, {
+                    direction_command_topic: `${TOPIC.command(_)}/direction`,
+                    direction_state_topic: `${TOPIC.state(_)}/direction`,
+                });
+            }
+
+            if (_.fan.enableOscillation) {
+                Object.assign(additionalKeys, {
+                    oscillation_command_topic: `${TOPIC.command(_)}/oscillation`,
+                    oscillation_state_topic: `${TOPIC.state(_)}/oscillation`,
+                    payload_oscillation_off: `false`,
+                    payload_oscillation_on: `true`,
+                });
+            }
+
+            if (_.fan.enablePercentage) {
+                Object.assign(additionalKeys, {
+                    percentage_command_topic: `${TOPIC.command(_)}/percentage`,
+                    percentage_state_topic: `${TOPIC.state(_)}/percentage`,
+
+                    speed_range_min: 1,
+                    speed_range_max: _.fan.speedRangeMax,
+                });
+            }
+
+            if (_.fan.enablePresetMode) {
+                Object.assign(additionalKeys, {
+                    preset_mode_command_topic: `${TOPIC.command(_)}/presetMode`,
+                    preset_mode_state_topic: `${TOPIC.state(_)}/presetMode`,
+                    preset_modes: JSON.parse(_.fan.presetModes),
+                });
+            }
+
+            break;
+
         default:
             break;
     }
@@ -121,28 +140,23 @@ function discoveryPayload(entity) {
     return _entity;
 }
 
-/**
- * TODO: Maybe it should be in blockly
- */
-const routeCmndTopic = async (topic) => mqtt.route(topic, async (topic, message) => {
-    console.log(topic);
-    // const parsedTopic = topic.match(/dev\/([0-F]{12})\/(\d+)\/cmnd\/?(\w+)?/);
-    // let irCode = {
-    //     entityId: parseInt(parsedTopic[2]),
-    //     topicSufix: parsedTopic[3] ? parsedTopic[3] : '',
-    // }
-    // const boardId = parsedTopic[1];
-    // irCode = await model.getIrcode(irCode);
-    // if (!irCode) {
-    //     throw new Error('123');
-    // }
-    // irCode.rawData = JSON.parse(irCode.rawData);
-    // await sendRaw({boardId, irCode});
-    /**
-     * TODO: Blockly
-     * @return state topic
-     */
-});
+async function subCmndTopic(device) {
+    const states = await getAllState(device.id);
+    Object.keys(states).forEach((stateKey) => {
+        mqtt.unroute(TOPIC.commandFromState(device.id, stateKey));
+        mqtt.route(
+            TOPIC.commandFromState(device.id, stateKey),
+            createHaCallBack(device.id, stateKey),
+        );
+    });
+}
+
+async function initSubCmndTopic() {
+    const devices = await listDevices();
+    devices.forEach((device) => {
+        subCmndTopic(device);
+    });
+}
 
 /**
  * Publish the entity to let Home Assistant
@@ -163,16 +177,17 @@ const publishEntity = (entity) => {
  * then subscribe to it's command topics.
  * @param {*} entity 
  */
-const configHAEntity = (entity) => {
+const configHAEntity = async (entity) => {
     publishEntity(entity);
     // TODO: should support FAN, HVAC...
     
     // Publish entity's state.
-    const state = JSON.stringify(entity[entity.type].state);
-    client.publish(TOPIC.state(entity), state, { retain: true });
+    const entityStates = await getAllStateByEntityId(entity.device.id, entity.id);
 
-    const cmndTopic = TOPIC.command(entity);
-    routeCmndTopic(cmndTopic);
+    Object.keys(entityStates).forEach((key) => {
+        const state = JSON.stringify(entityStates[key].state);
+        client.publish(TOPIC.stateFromState(entity.device.id, key), state, { retain: true });
+    });
 };
 
 const initHAEntities = async () => {
@@ -185,10 +200,16 @@ const initHAEntities = async () => {
 /**
  * Sync database's entity with Home Assistant's.
  */
-initHAEntities();
+
+function init() {
+    initHAEntities();
+    initSubCmndTopic();
+}
 
 module.exports = {
+    init,
     configHAEntity,
+    subCmndTopic,
 
     /**
      * Delete the device by publishing a MQTT
@@ -197,12 +218,10 @@ module.exports = {
      * @param {*} entity
      */
     deleteEntity: (entity) => {
-        // build the topic
-        const topic = dicoveryTopic(entity);
 
         // TODO: should support FAN, HVAC...
         client.publish(TOPIC.state(entity), entity.state, { retain: false });
-        mqtt.unroute(topic);
-        client.publish(topic, '');
+        mqtt.unroute(TOPIC.command(entity));
+        client.publish(TOPIC.discovery(entity), '');
     }
 };

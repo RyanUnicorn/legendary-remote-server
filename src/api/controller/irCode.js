@@ -33,8 +33,7 @@ module.exports = {
                 const result = await service.sendIrcode(req.body);
                 res.status(200).send(result);
             } catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+                res.status(400).send(err.toString());
             }
         }
     ],

@@ -24,14 +24,15 @@ model Board {
 // device in HomeAssistant
 model Device {
   // board - relation = device
-  board   Board?  @relation(fields: [boardId], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  board   Board?  @relation(fields: [boardId], references: [id], onUpdate: SetNull, onDelete: SetNull)
   boardId String?
 
   id               Int     @id @default(autoincrement())
   name             String
-  enableUpdate     Boolean @default(true)
+  enableUpdate     Boolean @default(false)
   blocklyJS        String?
-  blocklyWorkspace String?
+  blocklyWorkspace String  @default("{}")
+  irSendInterval   Int     @default(150)
 
   entities Entity[]
   irCodes  IrCode[]
@@ -53,6 +54,7 @@ model Entity {
   select Select?
   button Button?
   number Number?
+  fan    Fan?
 }
 
 model IrCode {
@@ -99,6 +101,24 @@ model Number {
   isSlider Boolean?
 }
 
+model Fan {
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  entityId Int    @id
+
+  state            Boolean @default(false)
+  directionState   String  @default("forward")
+  oscillationState Boolean @default(false)
+  percentageState  Int     @default(1)
+  presetModeState  String  @default("")
+
+  enableDirection   Boolean @default(false)
+  enableOscillation Boolean @default(false)
+  enablePercentage  Boolean @default(false)
+  enablePresetMode  Boolean @default(false)
+
+  speedRangeMax Int    @default(100)
+  presetModes   String @default("[]")
+}
+
 // model ac {}
-// model fan {}
 // model light {}

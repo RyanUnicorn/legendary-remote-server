@@ -5,6 +5,7 @@ const ENTITY_TYPES = {
     select: true,
     button: true,
     number: true,
+    fan: true,
 };
 
 
@@ -79,6 +80,9 @@ module.exports = {
         return await prisma.entity.delete({
             where: {
                 id: _id
+            },
+            include: {
+                device: true,
             }
         });
     }
