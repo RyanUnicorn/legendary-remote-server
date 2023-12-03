@@ -40,7 +40,7 @@ module.exports = {
     deleteEntity: async (entity) => {
         const _entity = await model.deleteEntity(entity);
 
-        homeAssistant.deleteEntity(_entity);
+        await homeAssistant.deleteEntity(_entity);
 
         const device = {
             id: _entity.deviceId,

@@ -25,11 +25,14 @@ module.exports = {
     },
 
     deleteDevice: async (device) => {
-        device = await model.deleteDevice(device);
+        const toDelDevice = await model.getDevice({id: device.id});
+        const toDelEntities = toDelDevice.entities;
 
-        device.entities.forEach((_entity) => {
-            homeAssistant.deleteEntity(_entity);
-        });
+        for(_entity of toDelEntities) {
+            await homeAssistant.deleteEntity(_entity);
+        }
+        
+        device = await model.deleteDevice(device);
 
         return device;
     },

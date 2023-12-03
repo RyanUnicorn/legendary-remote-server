@@ -411,7 +411,6 @@ function createHaCallBack(deviceId, stateKey) {
 async function getAllStateByEntityId(deviceId, entityId) {
     const states = await getAllState(deviceId);
     return Object.keys(states).reduce((entityStates, key) => {
-        // console.log('WOW', states[key].entityId, entityId);
         if(states[key].entityId == entityId) {
             entityStates[key] = states[key];
         }

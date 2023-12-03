@@ -213,11 +213,19 @@ module.exports = {
      * the expired topics.
      * @param {*} entity
      */
-    deleteEntity: (entity) => {
+    deleteEntity: async(entity) => {
 
-        // TODO: should support FAN, HVAC...
-        client.publish(TOPIC.state(entity), entity.state, { retain: false });
-        mqtt.unroute(TOPIC.command(entity));
+        // * Publish and unroute entity's states
+        const entityStates = await getAllStateByEntityId(entity.device.id, entity.id);
+        
+        // for every state of that entity, we publish and unroute it
+        Object.keys(entityStates).forEach((key) => {
+            const state = JSON.stringify(entityStates[key].state);
+            client.publish(TOPIC.stateFromState(entity.device.id, key), state, { retain: false });
+            mqtt.unroute(TOPIC.commandFromState(entity.device.id, key));
+        });
+
+        // remove it from HA using empty config payload
         client.publish(TOPIC.discovery(entity), '');
     }
 };
