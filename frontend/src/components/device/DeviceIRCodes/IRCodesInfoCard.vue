@@ -150,6 +150,7 @@
             bottom: 11px;
             background-color: var(--color-background);
             color: var(--color-accent);
+            width: 90%;
             font-size: 1rem;
             content: 'Press to send IRCode.';
             opacity: 0;
