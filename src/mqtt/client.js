@@ -9,9 +9,10 @@ client.BOARD_INTERVAL = 1000;
 client.BOARD_TIMEOUT = client.BOARD_INTERVAL + 500;
 client.RECV_TIMEOUT = 10000;
 
-const DISCOVERY_PREFIX = 'homeassistant';
+const DISCOVERY_PREFIX = process.env.MQTT_DISCOVERY_PREFIX || 'homeassistant';
 const DISCOVERY_SUFIX = 'config';
-const ENTITY_PREFIX = 'entity';
+
+const MQTT_TOPIC_PREFIX = process.env.MQTT_TOPIC_PREFIX || 'entity';
 const COMMAN_PREFIX = 'cmnd';
 const STATE_PREFIX = 'state';
 /**
@@ -26,16 +27,16 @@ const TOPIC = {
         `${DISCOVERY_PREFIX}/${entity.type}/${entity.id}/${DISCOVERY_SUFIX}`,
     
     command: (entity) =>
-        `${ENTITY_PREFIX}/${COMMAN_PREFIX}/${entity.deviceId}/${entity.id}`,
+        `${MQTT_TOPIC_PREFIX}/${COMMAN_PREFIX}/${entity.deviceId}/${entity.id}`,
 
     state: (entity) =>
-        `${ENTITY_PREFIX}/${STATE_PREFIX}/${entity.deviceId}/${entity.id}`,
+        `${MQTT_TOPIC_PREFIX}/${STATE_PREFIX}/${entity.deviceId}/${entity.id}`,
     
     stateFromState: (deviceId, stateKey) => 
-        `${ENTITY_PREFIX}/${STATE_PREFIX}/${deviceId}/${stateKey}`,
+        `${MQTT_TOPIC_PREFIX}/${STATE_PREFIX}/${deviceId}/${stateKey}`,
     
     commandFromState: (deviceId, stateKey) => 
-        `${ENTITY_PREFIX}/${COMMAN_PREFIX}/${deviceId}/${stateKey}`, 
+        `${MQTT_TOPIC_PREFIX}/${COMMAN_PREFIX}/${deviceId}/${stateKey}`, 
 }
 
 // {`topic`: {`regexp`, `callback`}, ...}

@@ -44,23 +44,22 @@ irCode.init();
 */
 let serverInfo, scheme, host, port;
 
-if (process.env.DEV) {
-    serverInfo = 'Running dev server'
-    scheme = 'http';
-    host = 'localhost'
-    port = 8080;
-}
+const PORT = process.env.PORT || 8080;
 
-const server = http.createServer(app);
-
-server.on('upgrade', (request, socket, head) => {
-    socket.on('error', console.error);
-
-    wss.handleUpgrade(request, socket, head, (ws) => {
-        wss.emit('connection', ws, request);
-    });
+app.listen(PORT, () => {
+    console.log(`Server running @ http://localhost:${PORT}`);
 });
 
-server.listen(port, () => {
-    console.log(`${serverInfo} @ ${scheme}://${host}:${port}`);
-});
+// const server = http.createServer(app);
+
+// server.on('upgrade', (request, socket, head) => {
+//     socket.on('error', console.error);
+
+//     wss.handleUpgrade(request, socket, head, (ws) => {
+//         wss.emit('connection', ws, request);
+//     });
+// });
+
+// server.listen(port, () => {
+//     console.log(`${serverInfo} @ ${scheme}://${host}:${port}`);
+// });

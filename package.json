@@ -4,7 +4,7 @@
   "description": "Woah",
   "main": "./src/index.js",
   "scripts": {
-    "dev": "set DEV=true&& nodemon .",
+    "dev": "nodemon .",
     "data": "node ./src/addTestData.js"
   },
   "repository": {
