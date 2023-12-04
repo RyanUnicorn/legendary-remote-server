@@ -5,7 +5,6 @@
   "main": "./src/index.js",
   "scripts": {
     "dev": "nodemon .",
-    "data": "node ./src/addTestData.js"
   },
   "repository": {
     "type": "git",
