@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, ref, watchEffect } from 'vue';
+import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 
   /**
    * This is a editable text componet, the passed in prop 'text' means the text being 
@@ -27,10 +27,12 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
     if(props.editing) {
       await nextTick();
       textInput.value.focus();
-    } else {
-      myText.value = props.text;
     }
   });
+
+  watchEffect(() => {
+    myText.value = props.text;
+  })
 
   const inputWidth = computed(() => {
     if(props.adaptiveWidth) {
@@ -67,6 +69,7 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
     font-size: inherit;
     font-weight: inherit;
     color: inherit;
+    font-family: 'Courier New', Courier, monospace;
   }
 
   .editable-text-text {
@@ -74,6 +77,19 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
     color: inherit;
     font-size: 1em;
     font-weight: inherit;
+    font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
   }
 
   .editable-text-input {
@@ -86,6 +102,20 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
     /* width: 10em; */
     width: v-bind(inputWidth);
     z-index: 2;
+    
+    font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
 
     &:focus {
       border-radius: 5px;
