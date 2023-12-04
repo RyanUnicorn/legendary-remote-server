@@ -27,7 +27,6 @@ async function init() {
     boards.forEach((_board) => {
         setBoardHandler(_board.id);
     });
-    console.log(sendingQueue);
 }
 
 async function loop(boardId) {
