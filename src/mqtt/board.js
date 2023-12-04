@@ -1,7 +1,7 @@
 const { client, ...mqtt } = require('./client');
-const { WebSocket } = require('ws');
+// const { WebSocket } = require('ws');
 
-const wss = require('../api/ws');
+// const wss = require('../api/ws');
 
 /**
  * `element = {id, lastSeen, isAvailable}`
@@ -37,7 +37,7 @@ function touchAvailableBoards(_id) {
     let board = availableBoards.find(({id}) => id == _id);
     
     if (!board) {
-        pushBoard(board);
+        pushBoard(_id);
         return;
     }
 
@@ -73,11 +73,11 @@ setInterval(() => {
     });
 
     // broadcast to all the ws client
-    wss.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(availableBoards));
-        }
-    });
+    // wss.clients.forEach(function each(client) {
+    //     if (client.readyState === WebSocket.OPEN) {
+    //       client.send(JSON.stringify(availableBoards));
+    //     }
+    // });
 
 }, client.BOARD_INTERVAL);
 
