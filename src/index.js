@@ -37,9 +37,10 @@ router.use('/ircodes', apiRouter.irCode);
 router.use('/blockly', apiRouter.blockly);
 
 // server the built front end
+const path = require('path');
 app.use(express.static('./public'));
 app.get('*', (req, res) => {
-    res.sendFile('./public/index.html');
+    res.sendFile(path.resolve(__dirname, '../public/index.html'));
 });
 
 homeAssistant.init();

@@ -4,7 +4,7 @@
   "description": "Woah",
   "main": "./src/index.js",
   "scripts": {
-    "dev": "nodemon .",
+    "dev": "nodemon ."
   },
   "repository": {
     "type": "git",
